@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Коллекция</title>
+    <link href="../static/styles/header.css" th:href="@{/styles/header.css}" rel="stylesheet"/>
+    <link href="../static/styles/seed.css" th:href="@{/styles/seed.css}" rel="stylesheet"/>
+    <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
+    <link href="../static/seeds" th:href="@{/seeds}"/>
+</head>
+
+<body>
+<div class="navigation">
+    <div class="name">
+        <a th:href="@{/}">Банк семян Самарского университета</a>
+    </div>
+    <div class="buttons">
+        <a th:href="@{/atlas}">Атлас</a>
+        <a th:href="@{/collection}">Коллекция</a>
+        <a th:href="@{/articles}">Статьи</a>
+        <a th:href="@{/news}">Новости</a>
+        <a th:href="@{/contacts}">Контакты</a>
+    </div>
+</div>
+
+<div class="seedCard">
+    <table class="card">
+        <tr>
+            <th>ID</th>
+            <td th:text="${seed.getSeedId()}"></td>
+        </tr>
+        <tr>
+            <th>Семейство</th>
+            <td th:text="${seed.specie.genus.family.getNameOfFamily()}"></td>
+        </tr>
+        <tr>
+            <th>Род</th>
+            <td th:text="${seed.specie.genus.getNameOfGenus()}"></td>
+        </tr>
+        <tr>
+            <th>Вид</th>
+            <td th:text="${seed.specie.getNameOfSpecie()}"></td>
+        </tr>
+        <tr>
+            <th>Red List</th>
+            <td th:text="${seed.red_list.getCategory()}"></td>
+        </tr>
+        <tr>
+            <th>Красная книга РФ</th>
+            <td th:text="${seed.red_book_rf.getCategory()}"></td>
+        </tr>
+        <tr>
+            <th>Красная книга Самарской области</th>
+            <td th:text="${seed.red_book_so.getCategory()}"></td>
+        </tr>
+        <tr>
+            <th>Дата сбора</th>
+            <td th:text="${seed.getDateOfCollection()}"></td>
+        </tr>
+        <tr>
+            <th>Место сбора</th>
+            <td th:text="${seed.place_of_collection.getPlaceOfCollection()}"></td>
+        </tr>
+        <tr>
+            <th>Масса 1000 семян, г</th>
+            <td th:text="${seed.getWeightOf1000Seeds()}"></td>
+        </tr>
+        <tr>
+            <th>Количество семян, шт</th>
+            <td th:text="${seed.getNumberOfSeeds()}"></td>
+        </tr>
+        <tr>
+            <th>Выполненные семена, %</th>
+            <td th:text="${seed.getCompletedSeeds()}"></td>
+        </tr>
+        <tr>
+            <th>Всхожесть семян, %</th>
+            <td th:text="${seed.getSeedGermination()}"></td>
+        </tr>
+        <tr>
+            <th>Влажность семян, %</th>
+            <td th:text="${seed.getSeedMoisture()}"></td>
+        </tr>
+        <tr>
+            <th>GPS, N, E, H</th>
+            <td th:text="${seed.getGPSLatitude()} + '/' + ${seed.getGPSLongitude()} + '/' + ${seed.getGPSAltitude()}"></td>
+        </tr>
+        <tr>
+            <th>"Экотоп"</th>
+            <td th:text="${seed.ecotop.getNameOfEcotop()}"></td>
+        </tr>
+        <tr>
+            <th>Заселенность вредителями, %</th>
+            <td th:text="${seed.getPestInfestation()}"></td>
+        </tr>
+        <tr>
+            <th>Комментарий</th>
+            <td th:text="${seed.getComment()}"></td>
+        </tr>
+    </table>
+        <div class="photos">
+            <div class="photo-wrapper">
+                <p class="photo-caption">Рентгенограмма</p>
+                <img th:src="@{'data:image/jpeg;base64,'+${xray}}" alt="Рентгенограмма" class="photo"/>
+            </div>
+            <div class="photo-wrapper">
+                <p class="photo-caption">Фото семян</p>
+                <img th:src="@{'data:image/jpeg;base64,'+${seedPh}}" alt="Фото семян" class="photo">
+            </div>
+            <div class="photo-wrapper">
+                <p class="photo-caption">Экотоп</p>
+                <img th:src="@{'data:image/jpeg;base64,'+${ecotop}}" alt="Экотоп" class="photo">
+            </div>
+        </div>
+</div>
+
+<footer th:fragment="footer">
+    <div class="footer-margin"></div>
+</footer>
+</body>
+
+</html>

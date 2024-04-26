@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Коллекция</title>
+    <link href="../static/styles/header.css" th:href="@{/styles/header.css}" rel="stylesheet"/>
+    <link href="../static/styles/collection.css" th:href="@{/styles/collection.css}" rel="stylesheet"/>
+    <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
+</head>
+
+<body>
+    <div class="navigation">
+        <div class="name">
+            <a th:href="@{/}">Банк семян Самарского университета</a>
+        </div>
+        <div class="buttons">
+            <a th:href="@{/atlas}">Атлас</a>
+            <a th:href="@{/collection}">Коллекция</a>
+            <a th:href="@{/articles}">Статьи</a>
+            <a th:href="@{/news}">Новости</a>
+            <a th:href="@{/contacts}">Контакты</a>
+        </div>
+    </div>
+
+
+    <div class="collection">
+        <table class="table">
+            <form th:action="@{/collection}" method="get">
+                <tr class="search">
+                    <th class="disabled"></th>
+                    <th><label>
+                        <input type="text" name="family" id="family" th:name="family" placeholder="Поиск..." th:value="${_family}">
+                    </label></th>
+                    <th><label>
+                        <input type="text" name="genus" id="genus" th:name="genus" placeholder="Поиск..." th:value="${_genus}">
+                    </label></th>
+                    <th><label>
+                        <input type="text" name="specie" id="specie" th:name="specie" placeholder="Поиск..." th:value="${_specie}">
+                    </label></th>
+                    <th colspan="2" class="button">
+                        <button type="submit">Поиск</button>
+                        <button type="button" onclick="resetForm()">Очистить</button>
+                    </th>
+                </tr>
+            </form>
+            <tr>
+                <th>ID</th>
+                <th>Семейство</th>
+                <th>Род</th>
+                <th>Вид</th>
+                <th>Красная книга РФ</th>
+                <th>Red List</th>
+            </tr>
+            <tr th:each="seed : ${seeds}" th:onclick="'window.location.href = \'/collection/id=' + ${seed.getSeedId()} + '\''">
+                <td th:text="${seed.getSeedId()}">ID</td>
+                <td th:text="${seed.specie.genus.family.getNameOfFamily()}">Семейство</td>
+                <td th:text="${seed.specie.genus.getNameOfGenus()}">Род</td>
+                <td th:text="${seed.specie.getNameOfSpecie()}">Вид</td>
+                <td th:text="${seed.red_book_rf.getCategory()}">Красная книга РФ</td>
+                <td th:text="${seed.red_list.getCategory()}">Red List</td>
+            </tr>
+        </table>
+
+        <div class="pageInfo" th:if="${seeds.totalPages > 1}">
+            <div class="pageNumber">
+                <span th:text="${(seeds.number + 1) + ' / ' + seeds.totalPages}"></span>
+            </div>
+            <div class="pageButtons" th:if="${seeds.totalPages > 1 and #strings.isEmpty(_family) and #strings.isEmpty(_genus) and #strings.isEmpty(_specie)}">
+                <a th:if="${seeds.hasPrevious()}"
+                   th:href="@{/collection(page=${seeds.number - 1})}">Назад</a>
+                <a th:if="${seeds.hasNext()}"
+                   th:href="@{/collection(page=${seeds.number + 1})}">Далее</a>
+            </div>
+            <div class="pageButtons" th:if="${seeds.totalPages > 1 and (not #strings.isEmpty(_family) or not #strings.isEmpty(_genus) or not #strings.isEmpty(_specie))}">
+                <a th:if="${seeds.hasPrevious()}"
+                   th:href="@{/collection(family=${_family}, genus=${_genus}, specie=${_specie}, page=${seeds.number - 1})}">Назад</a>
+                <a th:if="${seeds.hasNext()}"
+                   th:href="@{/collection(family=${_family}, genus=${_genus}, specie=${_specie}, page=${seeds.number + 1})}">Далее</a>
+            </div>
+            <div class="form">
+                <form method="get" class="pageSelectionForm">
+                    <label>
+                        <input type="number" name="page" min="1" th:max="${seeds.totalPages}" placeholder="Страница" required>
+                    </label>
+                    <button type="submit">Перейти</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <footer th:fragment="footer">
+        <div class="footer-margin"></div>
+    </footer>
+
+    <script>
+        document.querySelector('.pageSelectionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let pageNum = parseInt(document.querySelector('input[name="page"]').value);
+            let family = document.querySelector('input[name="family"]').value;
+            let genus = document.querySelector('input[name="genus"]').value;
+            let specie = document.querySelector('input[name="specie"]').value;
+            if (!isNaN(pageNum) && pageNum > 0 && (family.trim() !== '' || genus.trim() !== '' || specie.trim() !== '')) {
+                pageNum -= 1; // Пользователи вводят страницы, начиная с 1, но нам нужно начинать с 0
+                window.location.href = '/collection?family=' + family + '&genus=' + genus + '&specie=' + specie + '&page=' + pageNum;
+            } else if (!isNaN(pageNum) && pageNum > 0 && family.trim() === '' && genus.trim() === '' && specie.trim() === '') {
+                pageNum -= 1;
+                window.location.href = '/collection?page=' + pageNum;
+            }
+        });
+        function resetForm() {
+            document.getElementById('family').value = '';
+            document.getElementById('genus').value = '';
+            document.getElementById('specie').value = '';
+        }
+    </script>
+</body>
+
+</html>

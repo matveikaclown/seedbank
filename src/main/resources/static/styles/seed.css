@@ -1,0 +1,48 @@
+.seedCard {
+    justify-content: center;
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.table {
+
+    border-collapse: separate;
+    border-spacing: 5px; /* расстояние между ячейками и столбцами */
+    width: 80%;
+    margin: 10px auto;
+}
+td {
+    padding: 10px; /* расстояние внутри ячеек */
+    text-align: center;
+    border: 2px solid #000;
+    background-color: whitesmoke;
+}
+th {
+    padding: 10px; /* расстояние внутри ячеек */
+    text-align: center;
+    background-color: darkgrey;
+}
+
+.photos {
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-wrapper {
+    margin-bottom: 20px;
+}
+
+.photo {
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.photo-caption {
+    margin-top: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+}

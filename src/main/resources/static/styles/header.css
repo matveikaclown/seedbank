@@ -1,0 +1,43 @@
+body {
+    margin: 0 !important;
+    /*animation: scroll 500s linear infinite;
+    background: url(../img/ssau-logo.png);
+    background-size: 5%;*/
+}
+/*@keyframes scroll {
+    100% {
+        background-position: 4000px -0px;
+    }
+}*/
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0d47a1; /* Темно-синий цвет */
+    padding: 10px;
+    color: white; /* Белый цвет текста */
+    font-family: Arial, sans-serif;
+}
+.name {
+    font-size: 1.2em; /* Размер шрифта */
+    display: flex;
+    line-height: 1;
+}
+.name a {
+    text-decoration: none;
+    color: white; /* Белый цвет текста */
+    /*padding: 8px 16px;*/
+}
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+.buttons a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: white; /* Белый цвет текста */
+    font-size: 1.2em; /* Размер шрифта */
+}
+.buttons a:hover, .name a:hover {
+    color: darkblue;
+}

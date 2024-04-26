@@ -1,0 +1,123 @@
+.collection {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.table {
+    border-collapse: separate;
+    border-spacing: 5px; /* расстояние между ячейками и столбцами */
+    width: 80%;
+    margin: 20px auto;
+}
+tr:hover td {
+    background-color: grey;
+    cursor: pointer;
+}
+td {
+    padding: 10px; /* расстояние внутри ячеек */
+    text-align: center;
+    border: 2px solid #000;
+    background-color: whitesmoke;
+}
+th {
+    padding: 10px; /* расстояние внутри ячеек */
+    text-align: center;
+    background-color: darkgrey;
+}
+.search th {
+    padding: 10px; /* расстояние внутри ячеек */
+    text-align: center;
+    background-color: white;
+    border: 2px solid darkgrey;
+}
+.search .disabled {
+    opacity: 0;
+}
+.search input {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+}
+th.button {
+    border: none;
+    text-align: left;
+    padding: 0 0 0 10px;
+}
+th.button button {
+    box-sizing: border-box;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    transition: background-color 0.3s ease;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    cursor: pointer;
+}
+.search button:hover {
+    background-color: #0056b3;
+}
+.search input:focus {
+    outline: none;
+}
+
+
+.pageInfo {
+    display: flex;
+    width: 75%;
+    margin: 0 auto 20px;
+}
+.pageInfo span {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    left: 0;
+}
+.pageInfo .pageButtons {
+    margin: 0 auto;
+}
+.pageInfo .pageButtons a {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 5px; /* Вертикальное расстояние между элементами */
+}
+.pageInfo .pageButtons a:hover {
+    background-color: #0056b3;
+}
+.pageInfo .pageSelectionForm {
+    right: 0;
+}
+.pageInfo .pageSelectionForm input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 95px;
+    height: 15px;
+    margin-right: 10px;
+    align-items: center;
+    text-align: center;
+}
+.pageInfo .pageSelectionForm button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.pageInfo .pageSelectionForm button:hover {
+    background-color: #0056b3
+}
