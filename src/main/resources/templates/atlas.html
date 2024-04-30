@@ -24,8 +24,8 @@
     <table th:each="seed : ${seeds}">
         <tr>
             <!--<th th:text="${seed.getSeedName()}"></th>-->
-            <th th:text="${seed.getSeedId()}"></th>
-            <td><img th:src="@{'data:image/jpeg;base64,'+${seedPhotos.get(seed.getSeedId())}}" alt="Фото семени"></td>
+            <th th:text="${seed.getId()}"></th>
+            <td><img th:src="@{'data:image/jpeg;base64,'+${seedPhotos.get(seed.getId())}}" alt="Фото семени"></td>
         </tr>
     </table>
 </body>

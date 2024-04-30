@@ -3,7 +3,7 @@ package ru.ssau.seedbank.service;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import ru.ssau.seedbank.model.Seed;
+import ru.ssau.seedbank.dto.AtlasDto;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,14 +24,14 @@ public class PhotoService {
         return Base64.encodeBase64String(bytes);
     }
 
-    public HashMap<Integer, String> getAllPhotos(Page<Seed> seeds) {
+    public HashMap<Integer, String> getAllPhotos(Page<AtlasDto> seeds) {
         HashMap<Integer, String> photos = new HashMap<>();
-        for (Seed seed : seeds) {
+        for (AtlasDto seed : seeds) {
             try {
-                photos.put(seed.getSeedId(), Base64.encodeBase64String(Files.readAllBytes(Paths.get("images\\" + seed.getSeedId().toString() + "\\seed.jpg"))));
+                photos.put(seed.getId(), Base64.encodeBase64String(Files.readAllBytes(Paths.get("images\\" + seed.getId().toString() + "\\seed.jpg"))));
             } catch (IOException e) {
                 System.out.println(e.getMessage());
-                photos.put(seed.getSeedId(), Base64.encodeBase64String(new byte[0]));
+                photos.put(seed.getId(), Base64.encodeBase64String(new byte[0]));
             }
         }
         return photos;

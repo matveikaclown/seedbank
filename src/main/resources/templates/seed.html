@@ -28,31 +28,31 @@
     <table class="card">
         <tr>
             <th>ID</th>
-            <td th:text="${seed.getSeedId()}"></td>
+            <td th:text="${seed.getId()}"></td>
         </tr>
         <tr>
             <th>Семейство</th>
-            <td th:text="${seed.specie.genus.family.getNameOfFamily()}"></td>
+            <td th:text="${seed.getFamily()}"></td>
         </tr>
         <tr>
             <th>Род</th>
-            <td th:text="${seed.specie.genus.getNameOfGenus()}"></td>
+            <td th:text="${seed.getGenus()}"></td>
         </tr>
         <tr>
             <th>Вид</th>
-            <td th:text="${seed.specie.getNameOfSpecie()}"></td>
+            <td th:text="${seed.getSpecie()}"></td>
         </tr>
         <tr>
             <th>Red List</th>
-            <td th:text="${seed.red_list.getCategory()}"></td>
+            <td th:text="${seed.getRedList()}"></td>
         </tr>
         <tr>
             <th>Красная книга РФ</th>
-            <td th:text="${seed.red_book_rf.getCategory()}"></td>
+            <td th:text="${seed.getRedBookRF()}"></td>
         </tr>
         <tr>
             <th>Красная книга Самарской области</th>
-            <td th:text="${seed.red_book_so.getCategory()}"></td>
+            <td th:text="${seed.getRedBookSO()}"></td>
         </tr>
         <tr>
             <th>Дата сбора</th>
@@ -60,7 +60,7 @@
         </tr>
         <tr>
             <th>Место сбора</th>
-            <td th:text="${seed.place_of_collection.getPlaceOfCollection()}"></td>
+            <td th:text="${seed.getPlaceOfCollection()}"></td>
         </tr>
         <tr>
             <th>Масса 1000 семян, г</th>
@@ -88,7 +88,7 @@
         </tr>
         <tr>
             <th>"Экотоп"</th>
-            <td th:text="${seed.ecotop.getNameOfEcotop()}"></td>
+            <td th:text="${seed.getEcotop()}"></td>
         </tr>
         <tr>
             <th>Заселенность вредителями, %</th>

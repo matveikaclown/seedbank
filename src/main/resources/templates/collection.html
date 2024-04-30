@@ -52,13 +52,13 @@
                 <th>Красная книга РФ</th>
                 <th>Red List</th>
             </tr>
-            <tr th:each="seed : ${seeds}" th:onclick="'window.location.href = \'/collection/id=' + ${seed.getSeedId()} + '\''">
-                <td th:text="${seed.getSeedId()}">ID</td>
-                <td th:text="${seed.specie.genus.family.getNameOfFamily()}">Семейство</td>
-                <td th:text="${seed.specie.genus.getNameOfGenus()}">Род</td>
-                <td th:text="${seed.specie.getNameOfSpecie()}">Вид</td>
-                <td th:text="${seed.red_book_rf.getCategory()}">Красная книга РФ</td>
-                <td th:text="${seed.red_list.getCategory()}">Red List</td>
+            <tr th:each="seed : ${seeds}" th:onclick="'window.location.href = \'/collection/id=' + ${seed.getId()} + '\''">
+                <td th:text="${seed.getId()}">ID</td>
+                <td th:text="${seed.getFamily()}">Семейство</td>
+                <td th:text="${seed.getGenus()}">Род</td>
+                <td th:text="${seed.getSpecie()}">Вид</td>
+                <td th:text="${seed.getRedBookRF()}">Красная книга РФ</td>
+                <td th:text="${seed.getRedList()}">Red List</td>
             </tr>
         </table>
 

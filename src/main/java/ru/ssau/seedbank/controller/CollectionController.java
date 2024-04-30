@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.ssau.seedbank.model.Seed;
+import ru.ssau.seedbank.dto.SeedDto;
 import ru.ssau.seedbank.service.PhotoService;
 import ru.ssau.seedbank.service.SeedService;
 
@@ -32,10 +32,10 @@ public class CollectionController {
             @RequestParam(value = "specie", required = false) String specie,
             Model model) {
         if (family != null && !family.isEmpty() || genus != null && !genus.isEmpty() || specie != null && !specie.isEmpty()) {
-            model.addAttribute("seeds", seedService.getAllSeedsByParams(specie, genus, family, pageable));
+            model.addAttribute("seeds", seedService.getAllCollectionSeedsByParams(specie, genus, family, pageable));
         }
         else {
-            model.addAttribute("seeds", seedService.getAllSeeds(pageable));
+            model.addAttribute("seeds", seedService.getAllCollectionSeeds(pageable));
         }
         model.addAttribute("_family", family);
         model.addAttribute("_genus", genus);
@@ -47,10 +47,10 @@ public class CollectionController {
     public String seed(
             @PathVariable("id") Integer id,
             Model model) {
-        Seed seed = seedService.getSeedById(id);
-        String _xray = photoService.encodeBase64("images\\" + seed.getSeedId().toString() + "\\xray.jpg");
-        String _seed = photoService.encodeBase64("images\\" + seed.getSeedId().toString() + "\\seed.jpg");
-        String _ecotop = photoService.encodeBase64("images\\" + seed.getSeedId().toString() + "\\ecotop.jpg");
+        SeedDto seed = seedService.getSeedById(id);
+        String _xray = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\xray.jpg");
+        String _seed = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\seed.jpg");
+        String _ecotop = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\ecotop.jpg");
         model.addAttribute("seed", seed);
         model.addAttribute("xray", _xray);
         model.addAttribute("seedPh", _seed);

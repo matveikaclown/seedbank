@@ -7,7 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.ssau.seedbank.model.Seed;
+import ru.ssau.seedbank.dto.AtlasDto;
 import ru.ssau.seedbank.service.PhotoService;
 import ru.ssau.seedbank.service.SeedService;
 
@@ -25,7 +25,7 @@ public class AtlasController {
 
     @GetMapping("/atlas")
     public String atlas(@PageableDefault(value = 20, sort = /*{"seedName"}*/ {"seedId"}) Pageable pageable, Model model) {
-        Page<Seed> seeds = seedService.getAllSeeds(pageable);
+        Page<AtlasDto> seeds = seedService.getAllAtlasSeeds(pageable);
         model.addAttribute("seeds", seeds);
         model.addAttribute("seedPhotos", photoService.getAllPhotos(seeds));
         return "atlas";
