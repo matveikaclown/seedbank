@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Data
 @Entity
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 public class Seed {
 
     @Id
+    @Column(name = "seed_id")
     private Integer seedId;                 // ID семени
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -41,6 +43,12 @@ public class Seed {
     @JoinColumn(name = "ecotop_id", nullable = false)
     private Ecotop ecotop;                // ID экотопа
 
+    @ManyToMany
+    @JoinTable(name = "seed_field",
+            joinColumns = @JoinColumn(name = "seed_id", referencedColumnName = "seed_id"),
+            inverseJoinColumns = @JoinColumn(name = "field_id", referencedColumnName = "field_id"))
+    private Set<Field> fields;
+
     private String seedName;                // название семени
     private Timestamp dateOfCollection;        // дата сбора
     @Column(name = "gpslatitude", length = 20)
@@ -61,9 +69,6 @@ public class Seed {
     private String seedMoisture;            // влажность семян
     @Column(name = "pest_infestation", length = 6)
     private String pestInfestation;         // заселенность вредителями
-    private String photoXRay;               // фото ренгтеннограммы
-    private String photoSeed;               // фото семени
-    private String photoEcotop;             // фото экотопа
     @Column(name = "comment", columnDefinition = "text")
     private String comment;                 // комментарий
 
