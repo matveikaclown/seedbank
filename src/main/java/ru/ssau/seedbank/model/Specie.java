@@ -15,7 +15,7 @@ public class Specie {
     private Integer specieId;       // ID вида
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "genus_id", nullable = false)
+    @JoinColumn(name = "genus_id")
     private Genus genus;         // ID рода
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "specie")

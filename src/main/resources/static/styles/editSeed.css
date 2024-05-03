@@ -1,0 +1,40 @@
+form {
+    max-width: 600px; /* ширина формы */
+    margin: 40px auto; /* центрируем форму по горизонтали */
+    padding: 20px; /* добавляем отступы */
+    background-color: #f9f9f9; /* цвет фона */
+    border: 1px solid #ccc; /* рамка */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* тень */
+}
+
+label {
+    margin-bottom: 10px; /* добавляем отступы между label */
+    margin-left: 20px; /* добавляем отступ слева */
+}
+
+input[type="text"], input[type="file"] {
+    width: 90%; /* ширина input полей (оставляем 10% для отступа справа) */
+    height: 40px; /* высота input полей */
+    margin-bottom: 20px; /* добавляем отступы между input */
+    padding: 10px; /* добавляем отступы внутри input */
+    border: 1px solid #ccc; /* рамка */
+    margin-left: 20px; /* добавляем отступ слева */
+    margin-right: 20px; /* добавляем отступ справа */
+}
+
+input[type="submit"] {
+    width: 90%; /* ширина кнопки submit (оставляем 10% для отступа справа) */
+    height: 40px; /* высота кнопки submit */
+    background-color: #4CAF50; /* цвет кнопки */
+    color: #fff; /* цвет текста кнопки */
+    padding: 10px; /* добавляем отступы внутри кнопки */
+    border: none; /* убираем рамку */
+    border-radius: 5px; /* скругляем углы */
+    cursor: pointer; /* изменяем курсор при наведении */
+    margin-left: 20px; /* добавляем отступ слева */
+    margin-right: 20px; /* добавляем отступ справа */
+}
+
+input[type="submit"]:hover {
+    background-color: #3e8e41; /* изменяем цвет кнопки при наведении */
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Коллекция</title>
+    <link href="../static/styles/header.css" th:href="@{/styles/header.css}" rel="stylesheet"/>
+    <link href="../static/styles/editSeed.css" th:href="@{/styles/editSeed.css}" rel="stylesheet"/>
+    <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
+</head>
+
+<body>
+    <div class="navigation">
+        <div class="name">
+            <a th:href="@{/}">Банк семян Самарского университета</a>
+        </div>
+        <div class="buttons">
+            <a th:href="@{/atlas}">Атлас</a>
+            <a th:href="@{/collection}">Коллекция</a>
+            <a th:href="@{/articles}">Статьи</a>
+            <a th:href="@{/news}">Новости</a>
+            <a th:href="@{/contacts}">Контакты</a>
+        </div>
+    </div>
+
+    <form action="#" th:action="@{/collection/add}" th:object="${seedDto}" method="post" enctype="multipart/form-data">
+        <label> ID:
+            <input type="text" th:field="*{id}" placeholder="Введите ID" />
+        </label>
+        <label> Семейство:
+            <input type="text" th:field="*{family}" placeholder="Введите семейство" />
+        </label>
+        <label> Род:
+            <input type="text" th:field="*{genus}" placeholder="Введите род" />
+        </label>
+        <label> Вид:
+            <input type="text" th:field="*{specie}" placeholder="Введите вид" />
+        </label>
+        <label> Категория Красного списка:
+            <input type="text" th:field="*{redList}" placeholder="Введите категорию Красного списка" />
+        </label>
+        <label> Категория Красной книги РФ:
+            <input type="text" th:field="*{redBookRF}" placeholder="Введите категори Красной книги РФ" />
+        </label>
+        <label> Категория Красной книги Самарской области:
+            <input type="text" th:field="*{redBookSO}" placeholder="Введите категорию Красной книги СО" />
+        </label>
+        <label> Дата сбора:
+            <input type="text" th:field="*{dateOfCollection}" placeholder="Введите дату сбора ДД/ММ/ГГГГ" />
+        </label>
+        <label> Место сбора:
+            <input type="text" th:field="*{placeOfCollection}" placeholder="Введите место сбора" />
+        </label>
+        <label> Масса 1000 семян, г:
+            <input type="text" th:field="*{weightOf1000Seeds}" placeholder="Введите массу 1000 семян" />
+        </label>
+        <label> Количество семян, шт:
+            <input type="text" th:field="*{numberOfSeeds}" placeholder="Введите количество семян" />
+        </label>
+        <label> Выполненные семена, %:
+            <input type="text" th:field="*{completedSeeds}" placeholder="Введите процент выполненных семян" />
+        </label>
+        <label> Всхожесть семян, %:
+            <input type="text" th:field="*{seedGermination}" placeholder="Введите процент всхожести семян" />
+        </label>
+        <label> Влажность семян, %:
+            <input type="text" th:field="*{seedMoisture}" placeholder="Введите процент влажности семян" />
+        </label>
+        <label> GPS широта:
+            <input type="text" th:field="*{GPSLatitude}" placeholder="Введите широту" />
+        </label>
+        <label> GPS долгота:
+            <input type="text" th:field="*{GPSLongitude}" placeholder="Введите долготу" />
+        </label>
+        <label> GPS долгота:
+            <input type="text" th:field="*{GPSAltitude}" placeholder="Введите высоту" />
+        </label>
+        <label> Экотоп:
+            <input type="text" th:field="*{ecotop}" placeholder="Введите Экотоп" />
+        </label>
+        <label> Заселенность вредителями, %:
+            <input type="text" th:field="*{pestInfestation}" placeholder="Введите процент заселенности вредителями" />
+        </label>
+        <label> Комментарий:
+            <input type="text" th:field="*{comment}" placeholder="Введите комментарий" />
+        </label>
+
+        <label> Фото рентгеннограммы:
+            <input type="file" th:name="${xray}" />
+        </label>
+        <label> Фото семени:
+            <input type="file" th:name="${seed}" />
+        </label>
+        <label> Фото экотопа:
+            <input type="file" th:name="${ecotop}" />
+        </label>
+
+        <input type="submit" value="Submit" />
+    </form>
+
+    <footer th:fragment="footer">
+        <div class="footer-margin"></div>
+    </footer>
+</body>
+
+</html>

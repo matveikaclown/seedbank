@@ -2,11 +2,13 @@ package ru.ssau.seedbank.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "seed")
 public class Seed {
@@ -16,31 +18,31 @@ public class Seed {
     private Integer seedId;                 // ID семени
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id")
     private Account account;               // ID личного кабинета
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "specie_id", nullable = false)
+    @JoinColumn(name = "specie_id")
     private Specie specie;                // ID вида
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "red_list_id", nullable = false)
+    @JoinColumn(name = "red_list_id")
     private RedList red_list;       // ID категории красного списка
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "red_book_so_id", nullable = false)
+    @JoinColumn(name = "red_book_so_id")
     private RedBook red_book_so;     // ID категории красной книги СО
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "red_book_rf_id", nullable = false)
+    @JoinColumn(name = "red_book_rf_id")
     private RedBook red_book_rf;     // ID категории красной книги РФ
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "place_of_collection_id", nullable = false)
+    @JoinColumn(name = "place_of_collection_id")
     private PlaceOfCollection place_of_collection;     // ID места сбора
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "ecotop_id", nullable = false)
+    @JoinColumn(name = "ecotop_id")
     private Ecotop ecotop;                // ID экотопа
 
     @ManyToMany

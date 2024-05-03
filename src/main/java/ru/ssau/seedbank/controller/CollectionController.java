@@ -5,14 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.ssau.seedbank.dto.SeedDto;
 import ru.ssau.seedbank.service.PhotoService;
 import ru.ssau.seedbank.service.SeedService;
 
 @Controller
+@RequestMapping("/collection")
 public class CollectionController {
 
     private final SeedService seedService;
@@ -24,7 +23,7 @@ public class CollectionController {
         this.photoService = photoService;
     }
 
-    @GetMapping("/collection")
+    @GetMapping
     public String allSeeds(
             @PageableDefault(value = 20, sort = {"seedId"}) Pageable pageable,
             @RequestParam(value = "family", required = false) String family,
@@ -43,7 +42,7 @@ public class CollectionController {
         return "collection";
     }
 
-    @GetMapping("/collection/id={id}")
+    @GetMapping("/id={id}")
     public String seed(
             @PathVariable("id") Integer id,
             Model model) {
@@ -56,6 +55,18 @@ public class CollectionController {
         model.addAttribute("seedPh", _seed);
         model.addAttribute("ecotop", _ecotop);
         return "seed";
+    }
+
+    @GetMapping("/add")
+    public String newSeed(@RequestParam(value = "id", required = false) Integer id, Model model) {
+        model.addAttribute("id", id);
+        return "newSeed";
+    }
+
+    @PostMapping("/add")
+    public String addSeed(@RequestParam(value = "id") Integer id) {
+        seedService.addNewSeed(id);
+        return "redirect:/collection/id=" + id; /*TODO сделать норм перенаправление*/
     }
 
 }
