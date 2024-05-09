@@ -6,6 +6,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.seedbank.dto.SeedDto;
 import ru.ssau.seedbank.service.PhotoService;
 import ru.ssau.seedbank.service.SeedService;
@@ -44,12 +45,12 @@ public class CollectionController {
 
     @GetMapping("/id={id}")
     public String seed(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") String id,
             Model model) {
         SeedDto seed = seedService.getSeedById(id);
-        String _xray = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\xray.jpg");
-        String _seed = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\seed.jpg");
-        String _ecotop = photoService.encodeBase64("images\\" + seed.getId().toString() + "\\ecotop.jpg");
+        String _xray = photoService.encodeBase64("images\\" + seed.getId() + "\\xray.jpg");
+        String _seed = photoService.encodeBase64("images\\" + seed.getId() + "\\seed.jpg");
+        String _ecotop = photoService.encodeBase64("images\\" + seed.getId() + "\\ecotop.jpg");
         model.addAttribute("seed", seed);
         model.addAttribute("xray", _xray);
         model.addAttribute("seedPh", _seed);
@@ -58,15 +59,48 @@ public class CollectionController {
     }
 
     @GetMapping("/add")
-    public String newSeed(@RequestParam(value = "id", required = false) Integer id, Model model) {
+    public String newSeed(String id, Model model) {
         model.addAttribute("id", id);
         return "newSeed";
     }
 
     @PostMapping("/add")
-    public String addSeed(@RequestParam(value = "id") Integer id) {
-        seedService.addNewSeed(id);
-        return "redirect:/collection/id=" + id; /*TODO сделать норм перенаправление*/
+    public String addSeed(
+            @RequestParam(value = "taxon") String taxon,
+            @RequestParam(value = "place") String place,
+            @RequestParam(value = "year") String year,
+            @RequestParam(value = "delectus") String delectus) {
+        String id = taxon + "-" + place + "-" + year + "-" + delectus;
+        id = seedService.addNewSeed(id);
+        return "redirect:/collection/edit/id=" + id; /*TODO сделать норм перенаправление*/
+    }
+
+    @GetMapping("/edit/id={id}")
+    public String editSeed(
+            @PathVariable(value = "id") String id,
+            Model model
+            ) {
+        SeedDto seedDto = seedService.getSeedById(id);
+        String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray.jpg");
+        String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed.jpg");
+        String ecotop = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop.jpg");
+        model.addAttribute("seedDto", seedDto);
+        model.addAttribute("id", id);
+        model.addAttribute("xRay", xRay);
+        model.addAttribute("seed", seed);
+        model.addAttribute("ecotop", ecotop);
+        return "editSeed";
+    }
+
+    @PostMapping("edit/id={id}")
+    public String saveSeed(
+            @ModelAttribute(value = "seedDto") SeedDto seedDto,
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "xRay", required = false) MultipartFile xRay,
+            @RequestParam(value = "seed", required = false) MultipartFile seed,
+            @RequestParam(value = "ecotop", required = false) MultipartFile ecotop
+    ) {
+        return "redirect:/collection/id=" + seedDto.getId();
     }
 
 }

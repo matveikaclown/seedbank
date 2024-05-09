@@ -24,8 +24,8 @@ public class PhotoService {
         return Base64.encodeBase64String(bytes);
     }
 
-    public HashMap<Integer, String> getAllPhotos(Page<AtlasDto> seeds) {
-        HashMap<Integer, String> photos = new HashMap<>();
+    public HashMap<String, String> getAllPhotos(Page<AtlasDto> seeds) {
+        HashMap<String, String> photos = new HashMap<>();
         for (AtlasDto seed : seeds) {
             try {
                 photos.put(seed.getId(), Base64.encodeBase64String(Files.readAllBytes(Paths.get("images\\" + seed.getId().toString() + "\\seed.jpg"))));

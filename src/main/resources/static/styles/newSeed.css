@@ -22,8 +22,14 @@ input[type="number"] {
     margin-right: 20px; /* добавляем отступ справа */
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Кнопки спрятаны */
+}
+
 input[type="submit"] {
-    width: 90%; /* ширина кнопки submit (оставляем 10% для отступа справа) */
+    align-items: center;
+    width: calc(90% + 22px); /* ширина кнопки submit (оставляем 10% для отступа справа) */
     height: 40px; /* высота кнопки submit */
     background-color: #4CAF50; /* цвет кнопки */
     color: #fff; /* цвет текста кнопки */

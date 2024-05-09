@@ -24,14 +24,12 @@ public class SeedService {
     private static Page<CollectionDto> getCollectionDtos(Page<Seed> page) {
         return page.map(seed -> {
             CollectionDto collectionDto = new CollectionDto();
-            collectionDto.setId(seed.getSeedId());
 
+            collectionDto.setId(seed.getSeedId());
             if (seed.getSpecie() != null) {
                 collectionDto.setSpecie(seed.getSpecie().getNameOfSpecie());
-
                 if (seed.getSpecie().getGenus() != null) {
                     collectionDto.setGenus(seed.getSpecie().getGenus().getNameOfGenus());
-
                     if (seed.getSpecie().getGenus().getFamily() != null) {
                         collectionDto.setFamily(seed.getSpecie().getGenus().getFamily().getNameOfFamily());
                     } else {
@@ -46,13 +44,11 @@ public class SeedService {
                 collectionDto.setGenus("");
                 collectionDto.setFamily("");
             }
-
             if (seed.getRed_book_rf() != null) {
                 collectionDto.setRedBookRF(seed.getRed_book_rf().getCategory());
             } else {
                 collectionDto.setRedBookRF("");
             }
-
             if (seed.getRed_list() != null) {
                 collectionDto.setRedList(seed.getRed_list().getCategory());
             } else {
@@ -84,10 +80,11 @@ public class SeedService {
         return getCollectionDtos(page);
     }
 
-    public SeedDto getSeedById(Integer id) {
+    public SeedDto getSeedById(String id) {
         Seed seed = seedRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         SeedDto seedDto = new SeedDto();
         seedDto.setId(seed.getSeedId());
+        seedDto.setSeedName(seed.getSeedName());
         if (seed.getSpecie() != null) {
             seedDto.setSpecie(seed.getSpecie().getNameOfSpecie());
             if (seed.getSpecie().getGenus() != null) {
@@ -117,7 +114,7 @@ public class SeedService {
             seedDto.setRedBookRF("");
         }
         if (seed.getRed_book_so() != null) {
-            seedDto.setRedBookRF(seed.getRed_book_so().getCategory());
+            seedDto.setRedBookSO(seed.getRed_book_so().getCategory());
         } else {
             seedDto.setRedBookSO("");
         }
@@ -133,7 +130,7 @@ public class SeedService {
         seedDto.setSeedGermination(seed.getSeedGermination());
         seedDto.setSeedMoisture(seed.getSeedMoisture());
         seedDto.setGPSLatitude(seed.getGPSLatitude());
-        seedDto.setGPSLatitude(seed.getGPSLongitude());
+        seedDto.setGPSLongitude(seed.getGPSLongitude());
         seedDto.setGPSAltitude(seed.getGPSAltitude());
         if(seed.getEcotop() != null) {
             seedDto.setEcotop(seed.getEcotop().getNameOfEcotop());
@@ -145,12 +142,17 @@ public class SeedService {
         return seedDto;
     }
 
-    public void addNewSeed(Integer id) {
-        if (seedRepository.findById(id).isEmpty()) {
-            Seed seed = new Seed();
-            seed.setSeedId(id);
-            seedRepository.save(seed);
+    public String addNewSeed(String id) {
+        if (seedRepository.findById(id).isPresent()) {
+            int suffix = 0;
+            id += "-";
+            do suffix++; while (seedRepository.findById(id + suffix).isPresent());
+            id += String.valueOf(suffix);
         }
+        Seed seed = new Seed();
+        seed.setSeedId(id);
+        seedRepository.save(seed);
+        return id;
     }
 
 }

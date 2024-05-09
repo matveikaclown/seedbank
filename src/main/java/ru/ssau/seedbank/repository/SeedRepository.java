@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.ssau.seedbank.model.Seed;
 
-public interface SeedRepository extends JpaRepository<Seed, Integer> {
+public interface SeedRepository extends JpaRepository<Seed, String> {
 
     @Query("SELECT s FROM Seed s " +
             "WHERE (:specie IS NULL OR s.specie.nameOfSpecie LIKE :specie) " +

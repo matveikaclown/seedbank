@@ -23,79 +23,227 @@
         </div>
     </div>
 
-    <form action="#" th:action="@{/collection/add}" th:object="${seedDto}" method="post" enctype="multipart/form-data">
-        <label> ID:
-            <input type="text" th:field="*{id}" placeholder="Введите ID" />
-        </label>
-        <label> Семейство:
-            <input type="text" th:field="*{family}" placeholder="Введите семейство" />
-        </label>
-        <label> Род:
-            <input type="text" th:field="*{genus}" placeholder="Введите род" />
-        </label>
-        <label> Вид:
-            <input type="text" th:field="*{specie}" placeholder="Введите вид" />
-        </label>
-        <label> Категория Красного списка:
-            <input type="text" th:field="*{redList}" placeholder="Введите категорию Красного списка" />
-        </label>
-        <label> Категория Красной книги РФ:
-            <input type="text" th:field="*{redBookRF}" placeholder="Введите категори Красной книги РФ" />
-        </label>
-        <label> Категория Красной книги Самарской области:
-            <input type="text" th:field="*{redBookSO}" placeholder="Введите категорию Красной книги СО" />
-        </label>
-        <label> Дата сбора:
-            <input type="text" th:field="*{dateOfCollection}" placeholder="Введите дату сбора ДД/ММ/ГГГГ" />
-        </label>
-        <label> Место сбора:
-            <input type="text" th:field="*{placeOfCollection}" placeholder="Введите место сбора" />
-        </label>
-        <label> Масса 1000 семян, г:
-            <input type="text" th:field="*{weightOf1000Seeds}" placeholder="Введите массу 1000 семян" />
-        </label>
-        <label> Количество семян, шт:
-            <input type="text" th:field="*{numberOfSeeds}" placeholder="Введите количество семян" />
-        </label>
-        <label> Выполненные семена, %:
-            <input type="text" th:field="*{completedSeeds}" placeholder="Введите процент выполненных семян" />
-        </label>
-        <label> Всхожесть семян, %:
-            <input type="text" th:field="*{seedGermination}" placeholder="Введите процент всхожести семян" />
-        </label>
-        <label> Влажность семян, %:
-            <input type="text" th:field="*{seedMoisture}" placeholder="Введите процент влажности семян" />
-        </label>
-        <label> GPS широта:
-            <input type="text" th:field="*{GPSLatitude}" placeholder="Введите широту" />
-        </label>
-        <label> GPS долгота:
-            <input type="text" th:field="*{GPSLongitude}" placeholder="Введите долготу" />
-        </label>
-        <label> GPS долгота:
-            <input type="text" th:field="*{GPSAltitude}" placeholder="Введите высоту" />
-        </label>
-        <label> Экотоп:
-            <input type="text" th:field="*{ecotop}" placeholder="Введите Экотоп" />
-        </label>
-        <label> Заселенность вредителями, %:
-            <input type="text" th:field="*{pestInfestation}" placeholder="Введите процент заселенности вредителями" />
-        </label>
-        <label> Комментарий:
-            <input type="text" th:field="*{comment}" placeholder="Введите комментарий" />
-        </label>
+    <form th:action="@{/edit/id=${id}}" th:object="${seedDto}" method="post" enctype="multipart/form-data" style="max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <input type="hidden" th:field="*{id}" />
 
-        <label> Фото рентгеннограммы:
-            <input type="file" th:name="${xray}" />
-        </label>
-        <label> Фото семени:
-            <input type="file" th:name="${seed}" />
-        </label>
-        <label> Фото экотопа:
-            <input type="file" th:name="${ecotop}" />
-        </label>
+        <table>
+            <tr>
+                <th>Поле</th>
+                <th>Значение</th>
+                <th>Скрыть</th>
+            </tr>
+            <tr>
+                <td>ID</td>
+                <td><label>
+                    <input type="text" th:field="*{id}" readonly />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Имя</td>
+                <td><label>
+                    <input type="text" th:field="*{seedName}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Семейство</td>
+                <td><label>
+                    <input type="text" th:field="*{family}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Род</td>
+                <td><label>
+                    <input type="text" th:field="*{genus}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Вид</td>
+                <td><label>
+                    <input type="text" th:field="*{specie}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Red List</td>
+                <td><label>
+                    <input type="text" th:field="*{redList}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Красная книга РФ</td>
+                <td><label>
+                    <input type="text" th:field="*{redBookRF}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Красная книга Самарской области</td>
+                <td><label>
+                    <input type="text" th:field="*{redBookSO}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Дата сбора</td>
+                <td><label>
+                    <input type="text" th:field="*{dateOfCollection}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Место сбора</td>
+                <td><label>
+                    <input type="text" th:field="*{placeOfCollection}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Вес 1000 семян</td>
+                <td><label>
+                    <input type="text" th:field="*{weightOf1000Seeds}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Количество семян</td>
+                <td><label>
+                    <input type="text" th:field="*{numberOfSeeds}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Выполненные семена</td>
+                <td><label>
+                    <input type="text" th:field="*{completedSeeds}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Всходимость семян</td>
+                <td><label>
+                    <input type="text" th:field="*{seedGermination}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Влажность семян</td>
+                <td><label>
+                    <input type="text" th:field="*{seedMoisture}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>GPS широта</td>
+                <td><label>
+                    <input type="text" th:field="*{GPSLatitude}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>GPS долгота</td>
+                <td><label>
+                    <input type="text" th:field="*{GPSLongitude}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>GPS высота</td>
+                <td><label>
+                    <input type="text" th:field="*{GPSAltitude}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Экотоп</td>
+                <td><label>
+                    <input type="text" th:field="*{ecotop}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Заселенность вредителями</td>
+                <td><label>
+                    <input type="text" th:field="*{pestInfestation}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Комментарий</td>
+                <td><label>
+                    <input type="text" th:field="*{comment}" />
+                </label></td>
+                <td><label>
+                    <input type="checkbox" />
+                </label></td>
+            </tr>
+        </table>
 
-        <input type="submit" value="Submit" />
+        <!-- Изображения -->
+        <div>
+            <label>Рентгеновский снимок:</label>
+            <img th:src="@{'data:image/jpeg;base64,' + ${xRay}}" alt="X-Ray Image" width="150" height="150"/>
+            <input type="file" name="xRay" />
+        </div>
+        <div>
+            <label>Изображение семени:</label>
+            <img th:src="@{'data:image/jpeg;base64,' + ${seed}}" alt="Seed Image" width="150" height="150"/>
+            <input type="file" name="seed" />
+        </div>
+        <div>
+            <label>Экотоп:</label>
+            <img th:src="@{'data:image/jpeg;base64,' + ${ecotop}}" alt="Ecotop Image" width="150" height="150"/>
+            <input type="file" name="ecotop" />
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit">Сохранить изменения</button>
+            <button type="submit" formaction="@{/delete/id=${id}}">Удалить</button>
+        </div>
     </form>
 
     <footer th:fragment="footer">

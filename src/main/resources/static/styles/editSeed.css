@@ -1,5 +1,4 @@
 form {
-    max-width: 600px; /* ширина формы */
     margin: 40px auto; /* центрируем форму по горизонтали */
     padding: 20px; /* добавляем отступы */
     background-color: #f9f9f9; /* цвет фона */
@@ -8,22 +7,30 @@ form {
 }
 
 label {
-    margin-bottom: 10px; /* добавляем отступы между label */
-    margin-left: 20px; /* добавляем отступ слева */
+    display: block; /* делаем label блочным элементом */
 }
 
-input[type="text"], input[type="file"] {
-    width: 90%; /* ширина input полей (оставляем 10% для отступа справа) */
+input[type="text"],
+input[type="file"] {
+    width: calc(100% - 22px); /* ширина input полей */
     height: 40px; /* высота input полей */
-    margin-bottom: 20px; /* добавляем отступы между input */
     padding: 10px; /* добавляем отступы внутри input */
     border: 1px solid #ccc; /* рамка */
-    margin-left: 20px; /* добавляем отступ слева */
-    margin-right: 20px; /* добавляем отступ справа */
+
+}
+
+input[type="checkbox"] {
+    width: 24px; /* возвращаем стандартную ширину для checkbox */
+    height: 24px; /* возвращаем стандартную высоту для checkbox */
+}
+
+input[type="checkbox"], td {
+    text-align: center;
 }
 
 input[type="submit"] {
-    width: 90%; /* ширина кнопки submit (оставляем 10% для отступа справа) */
+    align-items: center;
+    width: calc(100% - 40px); /* ширина кнопки submit */
     height: 40px; /* высота кнопки submit */
     background-color: #4CAF50; /* цвет кнопки */
     color: #fff; /* цвет текста кнопки */
@@ -37,4 +44,41 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #3e8e41; /* изменяем цвет кнопки при наведении */
+}
+
+/* Стили для изображений */
+img {
+    margin-left: 20px; /* добавляем отступ слева */
+    margin-bottom: 11px; /* добавляем отступ снизу */
+}
+
+/* Стили для таблицы */
+table {
+    width: calc(100% - 40px); /* ширина таблицы */
+    margin-left: 20px; /* добавляем отступ слева */
+    margin-right: 20px; /* добавляем отступ справа */
+    margin-bottom: 20px; /* добавляем отступ снизу */
+    border-collapse: collapse; /* убираем промежутки между ячейками */
+    border: 1px solid #ccc; /* рамка вокруг таблицы */
+}
+
+th, td {
+    padding: 10px; /* отступы внутри ячеек */
+    border: 1px solid #ccc; /* рамка вокруг ячеек */
+    text-align: center; /* горизонтальное выравнивание текста и содержимого */
+    vertical-align: middle; /* вертикальное выравнивание текста и содержимого */
+}
+
+th {
+    background-color: #f0f0f0; /* цвет фона заголовка */
+    font-weight: bold; /* жирный текст для заголовка */
+}
+
+th:first-child, td:first-child,
+th:last-child, td:last-child {
+    width: 20%;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 60%;
 }

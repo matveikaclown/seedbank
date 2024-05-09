@@ -15,7 +15,7 @@ public class Seed {
 
     @Id
     @Column(name = "seed_id")
-    private Integer seedId;                 // ID семени
+    private String seedId;                 // ID семени
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "account_id")

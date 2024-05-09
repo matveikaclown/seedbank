@@ -24,8 +24,20 @@
 </div>
 
 <form action="#" th:action="@{/collection/add}" method="post">
-    <label> Введите ID для новой записи:
-        <input type="number" name="id" placeholder="Введите ID" min="1" max="2147483647" th:required="true"/>
+    <label>Введите код таксона:
+        <input type="number" name="taxon" placeholder="Введите ID" min="1" max="9999" th:required="true"/>
+    </label>
+
+    <label>Введите код места сбора:
+        <input type="number" name="place" placeholder="Введите код" min="1" max="9999" th:required="true"/>
+    </label>
+
+    <label>Введите год сбора:
+        <input type="number" name="year" placeholder="Введите номер" min="1" max="9999" th:required="true"/>
+    </label>
+
+    <label>Введите код делектуса:
+        <input type="number" name="delectus" placeholder="Введите SERIES" min="1" max="9999" th:required="true"/>
     </label>
 
     <input type="submit" value="Создать" />

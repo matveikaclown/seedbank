@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class AtlasDto {
 
-    Integer id;
-    String seedName;
+    private String id;
+    private String seedName;
 
 }

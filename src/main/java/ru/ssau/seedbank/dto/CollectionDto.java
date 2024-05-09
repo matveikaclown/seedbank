@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CollectionDto {
 
-    Integer id;
-    String family;
-    String genus;
-    String specie;
-    String redBookRF;
-    String redList;
+    private String id;
+    private String family;
+    private String genus;
+    private String specie;
+    private String redBookRF;
+    private String redList;
 
 }

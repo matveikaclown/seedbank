@@ -52,8 +52,8 @@
                 <th>Красная книга РФ</th>
                 <th>Red List</th>
             </tr>
-            <tr th:each="seed : ${seeds}" th:onclick="'window.location.href = \'/collection/id=' + ${seed.getId()} + '\''">
-                <td th:text="${seed.getId()}">ID</td>
+            <tr th:each="seed : ${seeds}" th:onclick="|window.location.href='@{/collection/id={seedId}(seedId=${seed.id})}'|">
+                <td th:text="${seed.id}">ID</td>
                 <td th:text="${seed.getFamily()}">Семейство</td>
                 <td th:text="${seed.getGenus()}">Род</td>
                 <td th:text="${seed.getSpecie()}">Вид</td>
