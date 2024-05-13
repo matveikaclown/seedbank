@@ -8,17 +8,42 @@ import org.springframework.stereotype.Service;
 import ru.ssau.seedbank.dto.AtlasDto;
 import ru.ssau.seedbank.dto.CollectionDto;
 import ru.ssau.seedbank.dto.SeedDto;
-import ru.ssau.seedbank.model.Seed;
-import ru.ssau.seedbank.repository.SeedRepository;
+import ru.ssau.seedbank.model.*;
+import ru.ssau.seedbank.repository.*;
 
 @Service
 public class SeedService {
 
     private final SeedRepository seedRepository;
+    private final FamilyRepository familyRepository;
+    private final GenusRepository genusRepository;
+    private final SpecieRepository specieRepository;
+    private final RedListRepository redListRepository;
+    private final RedBookRepository redBookRepository;
+    private final PlaceOfCollectionRepository placeOfCollectionRepository;
+    private final EcotopRepository ecotopRepository;
+    private final BookLevelRepository bookLevelRepository;
 
     @Autowired
-    public SeedService(SeedRepository seedRepository) {
+    public SeedService(
+            SeedRepository seedRepository,
+            FamilyRepository familyRepository,
+            GenusRepository genusRepository,
+            SpecieRepository specieRepository,
+            RedListRepository redListRepository,
+            RedBookRepository redBookRepository,
+            PlaceOfCollectionRepository placeOfCollectionRepository,
+            EcotopRepository ecotopRepository,
+            BookLevelRepository bookLevelRepository) {
         this.seedRepository = seedRepository;
+        this.familyRepository = familyRepository;
+        this.genusRepository = genusRepository;
+        this.specieRepository = specieRepository;
+        this.redListRepository = redListRepository;
+        this.redBookRepository = redBookRepository;
+        this.placeOfCollectionRepository = placeOfCollectionRepository;
+        this.ecotopRepository = ecotopRepository;
+        this.bookLevelRepository = bookLevelRepository;
     }
 
     private static Page<CollectionDto> getCollectionDtos(Page<Seed> page) {
@@ -153,6 +178,95 @@ public class SeedService {
         seed.setSeedId(id);
         seedRepository.save(seed);
         return id;
+    }
+
+    public void editSeed(SeedDto dto) {
+        Seed seed = seedRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Seed not found"));
+        // Find or create Family
+        Family family = familyRepository.findFamilyByNameOfFamily(dto.getFamily())
+                .orElseGet(() -> {
+                    Family newFamily = new Family();
+                    newFamily.setNameOfFamily(dto.getFamily());
+                    return familyRepository.save(newFamily);
+                });
+        // Find or create Genus
+        Genus genus = genusRepository.findGenusByNameOfGenusAndFamily(dto.getGenus(), family)
+                .orElseGet(() -> {
+                    Genus newGenus = new Genus();
+                    newGenus.setNameOfGenus(dto.getGenus());
+                    newGenus.setFamily(family);
+                    return genusRepository.save(newGenus);
+                });
+        // Find or create Specie
+        Specie specie = specieRepository.findSpecieByNameOfSpecieAndGenus(dto.getSpecie(), genus)
+                .orElseGet(() -> {
+                    Specie newSpecie = new Specie();
+                    newSpecie.setNameOfSpecie(dto.getSpecie());
+                    newSpecie.setGenus(genus);
+                    return specieRepository.save(newSpecie);
+                });
+        // Find or create RedList
+        RedList redList = redListRepository.findRedListByCategory(dto.getRedList())
+                .orElseGet(() -> {
+                    RedList newRedList = new RedList();
+                    newRedList.setCategory(dto.getRedList());
+                    return redListRepository.save(newRedList);
+                });
+        // Find or create RedBookRF, categoryId = 2
+        BookLevel bookLevelRF = bookLevelRepository.findById(2).orElseThrow(() -> new RuntimeException("RF book level not found"));
+        RedBook redBookRF = redBookRepository.findRedBookByCategoryAndBookLevel(dto.getRedBookRF(), bookLevelRF)
+                .orElseGet(() -> {
+                    RedBook newRedBook = new RedBook();
+                    newRedBook.setCategory(dto.getRedBookRF());
+                    newRedBook.setBookLevel(bookLevelRF);
+                    return redBookRepository.save(newRedBook);
+                });
+        // Find or create RedBookSO, categoryId = 1
+        BookLevel bookLevelSO = bookLevelRepository.findById(1).orElseThrow(() -> new RuntimeException("SO book level not found"));
+        RedBook redBookSO = redBookRepository.findRedBookByCategoryAndBookLevel(dto.getRedBookSO(), bookLevelSO)
+                .orElseGet(() -> {
+                    RedBook newRedBook = new RedBook();
+                    newRedBook.setCategory(dto.getRedBookSO());
+                    newRedBook.setBookLevel(bookLevelSO);
+                    return redBookRepository.save(newRedBook);
+                });
+        // Find or create PlaceOfColelction
+        PlaceOfCollection placeOfCollection = placeOfCollectionRepository.findPlaceOfCollectionByPlaceOfCollection(dto.getPlaceOfCollection())
+                .orElseGet(() -> {
+                    PlaceOfCollection newPlaceOfCollection = new PlaceOfCollection();
+                    newPlaceOfCollection.setPlaceOfCollection(dto.getPlaceOfCollection());
+                    return placeOfCollectionRepository.save(newPlaceOfCollection);
+                });
+        // Find or create Ecotop
+        Ecotop ecotop = ecotopRepository.findEcotopByNameOfEcotop(dto.getEcotop())
+                .orElseGet(() -> {
+                    Ecotop newEcotop = new Ecotop();
+                    newEcotop.setNameOfEcotop(dto.getEcotop());
+                    return ecotopRepository.save(newEcotop);
+                });
+
+
+        seed.setSpecie(specie);
+        seed.setRed_list(redList);
+        seed.setRed_book_rf(redBookRF);
+        seed.setRed_book_so(redBookSO);
+        seed.setPlace_of_collection(placeOfCollection);
+        seed.setEcotop(ecotop);
+
+        seed.setSeedName(dto.getSeedName());
+        seed.setDateOfCollection(dto.getDateOfCollection());
+        seed.setWeightOf1000Seeds(dto.getWeightOf1000Seeds());
+        seed.setNumberOfSeeds(dto.getNumberOfSeeds());
+        seed.setCompletedSeeds(dto.getCompletedSeeds());
+        seed.setSeedGermination(dto.getSeedGermination());
+        seed.setSeedMoisture(dto.getSeedMoisture());
+        seed.setGPSLatitude(dto.getGPSLatitude());
+        seed.setGPSLongitude(dto.getGPSLongitude());
+        seed.setGPSAltitude(dto.getGPSAltitude());
+        seed.setPestInfestation(dto.getPestInfestation());
+        seed.setComment(dto.getComment());
+
+        seedRepository.save(seed);
     }
 
 }

@@ -14,7 +14,7 @@ public class Ecotop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ecotopId;       // ID экотопа
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ecotop")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ecotop")
     private Set<Seed> seeds;
 
     private String nameOfEcotop;    // название экотопа

@@ -1,5 +1,6 @@
 package ru.ssau.seedbank.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class SeedDto {
 
+    @NotNull
     private String id;
+
     private String seedName;
     private String family;
     private String genus;

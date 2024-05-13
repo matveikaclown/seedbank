@@ -1,10 +1,12 @@
 package ru.ssau.seedbank.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.seedbank.dto.SeedDto;
@@ -83,24 +85,39 @@ public class CollectionController {
         SeedDto seedDto = seedService.getSeedById(id);
         String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray.jpg");
         String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed.jpg");
-        String ecotop = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop.jpg");
+        String ecotopPhoto = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop.jpg");
         model.addAttribute("seedDto", seedDto);
         model.addAttribute("id", id);
         model.addAttribute("xRay", xRay);
         model.addAttribute("seed", seed);
-        model.addAttribute("ecotop", ecotop);
+        model.addAttribute("ecotopPhoto", ecotopPhoto);
         return "editSeed";
     }
 
     @PostMapping("edit/id={id}")
     public String saveSeed(
-            @ModelAttribute(value = "seedDto") SeedDto seedDto,
-            @RequestParam(value = "id") String id,
+            @Valid @ModelAttribute(value = "seedDto") SeedDto seedDto,
+            BindingResult bindingResult,
+            @PathVariable("id") String id,
             @RequestParam(value = "xRay", required = false) MultipartFile xRay,
             @RequestParam(value = "seed", required = false) MultipartFile seed,
-            @RequestParam(value = "ecotop", required = false) MultipartFile ecotop
+            @RequestParam(value = "ecotopPhoto", required = false) MultipartFile ecotopPhoto
     ) {
+        /*if (bindingResult.hasErrors()) {
+            // Если есть ошибки валидации, верните обратно на страницу редактирования
+            return "editSeed";
+        }*/
+
+        seedService.editSeed(seedDto);
+        photoService.editXRay(xRay, seedDto.getId());
+        photoService.editSeed(seed, seedDto.getId());
+        photoService.editEcotop(ecotopPhoto, seedDto.getId());
         return "redirect:/collection/id=" + seedDto.getId();
+    }
+
+    @PostMapping("delete/id={id}")
+    public String deleteSeed() {
+        return "redirect:/collection";
     }
 
 }

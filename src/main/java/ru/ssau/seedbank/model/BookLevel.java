@@ -14,7 +14,7 @@ public class BookLevel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bookLevelId;    // ID уровня книги
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book_level")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bookLevel")
     private Set<RedBook> redBooks;
 
     private String levelOfBook;     // уровень книги

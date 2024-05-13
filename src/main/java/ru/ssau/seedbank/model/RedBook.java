@@ -15,8 +15,8 @@ public class RedBook {
     private Integer categoryId;     // ID категории
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "book_level_id", nullable = false)
-    private BookLevel book_level;         // ID уровня книги
+    @JoinColumn(name = "book_level_id")
+    private BookLevel bookLevel;         // ID уровня книги
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "red_book_so")
     private Set<Seed> seedsSO;

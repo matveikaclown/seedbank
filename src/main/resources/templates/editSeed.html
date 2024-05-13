@@ -23,9 +23,7 @@
         </div>
     </div>
 
-    <form th:action="@{/edit/id=${id}}" th:object="${seedDto}" method="post" enctype="multipart/form-data" style="max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <input type="hidden" th:field="*{id}" />
-
+    <form action="#"  th:action="@{/collection/edit/id={id}(id=${seedDto.getId()})}" th:object="${seedDto}" method="post" enctype="multipart/form-data">
         <table>
             <tr>
                 <th>Поле</th>
@@ -236,8 +234,8 @@
         </div>
         <div>
             <label>Экотоп:</label>
-            <img th:src="@{'data:image/jpeg;base64,' + ${ecotop}}" alt="Ecotop Image" width="150" height="150"/>
-            <input type="file" name="ecotop" />
+            <img th:src="@{'data:image/jpeg;base64,' + ${ecotopPhoto}}" alt="Ecotop Image" width="150" height="150"/>
+            <input type="file" name="ecotopPhoto" />
         </div>
 
         <div style="margin-top: 20px;">
