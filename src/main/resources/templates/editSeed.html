@@ -219,34 +219,83 @@
                     <input type="checkbox" />
                 </label></td>
             </tr>
+            <!-- Изображения -->
+            <tr>
+                <td>Рентгенограмма</td>
+                <td>
+                    <div>
+                        <img th:src="@{'data:image/jpeg;base64,' + ${xRay}}" th:attr="data-original-src=@{'data:image/jpeg;base64,' + ${xRay}}"
+                             alt="Нет фотографии" id="xRayPreview" width="150" height="150"/>
+                        <input type="file" name="xRay" onchange="previewImage(this, 'xRayPreview')" />
+                        <label>Удалить фотографию
+                            <input type="checkbox" name="deleteXRay"/>
+                        </label>
+                    </div>
+                </td>
+                <td><label>
+                        <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Фото семян</td>
+                <td>
+                    <div>
+                        <img th:src="@{'data:image/jpeg;base64,' + ${seed}}" th:attr="data-original-src=@{'data:image/jpeg;base64,' + ${seed}}"
+                             alt="Нет фотографии" id="seedPreview" width="150" height="150"/>
+                        <input type="file" name="seed" onchange="previewImage(this, 'seedPreview')" />
+                        <label>Удалить фотографию
+                            <input type="checkbox" name="deleteSeed"/>
+                        </label>
+                    </div>
+                </td>
+                <td><label>
+                        <input type="checkbox" />
+                </label></td>
+            </tr>
+            <tr>
+                <td>Экотоп</td>
+                <td>
+                    <div>
+                        <img th:src="@{'data:image/jpeg;base64,' + ${ecotopPhoto}}" th:attr="data-original-src=@{'data:image/jpeg;base64,' + ${ecotopPhoto}}"
+                             alt="Нет фотографии" id="ecotopPreview" width="150" height="150"/>
+                        <input type="file" name="ecotopPhoto" onchange="previewImage(this, 'ecotopPreview')" />
+                        <label> Удалить фотографию
+                            <input type="checkbox" name="deleteEcotop"/>
+                        </label>
+                    </div>
+                </td>
+                <td><label>
+                        <input type="checkbox" />
+                </label></td>
+            </tr>
         </table>
 
-        <!-- Изображения -->
         <div>
-            <label>Рентгеновский снимок:</label>
-            <img th:src="@{'data:image/jpeg;base64,' + ${xRay}}" alt="X-Ray Image" width="150" height="150"/>
-            <input type="file" name="xRay" />
-        </div>
-        <div>
-            <label>Изображение семени:</label>
-            <img th:src="@{'data:image/jpeg;base64,' + ${seed}}" alt="Seed Image" width="150" height="150"/>
-            <input type="file" name="seed" />
-        </div>
-        <div>
-            <label>Экотоп:</label>
-            <img th:src="@{'data:image/jpeg;base64,' + ${ecotopPhoto}}" alt="Ecotop Image" width="150" height="150"/>
-            <input type="file" name="ecotopPhoto" />
-        </div>
-
-        <div style="margin-top: 20px;">
-            <button type="submit">Сохранить изменения</button>
-            <button type="submit" formaction="@{/delete/id=${id}}">Удалить</button>
+            <button type="submit" name="action" value="save"
+                    onclick="return confirm('Вы уверены, что хотите применить изменения?')">Сохранить изменения</button>
+            <button type="submit" name="action" value="delete"
+                    onclick="return confirm('Вы уверены, что хотите удалить?')">Удалить</button>
         </div>
     </form>
 
     <footer th:fragment="footer">
         <div class="footer-margin"></div>
     </footer>
+
+    <script>
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = preview.getAttribute('data-original-src');
+            }
+        }
+    </script>
 </body>
 
 </html>

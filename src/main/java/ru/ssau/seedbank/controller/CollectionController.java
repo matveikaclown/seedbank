@@ -50,9 +50,9 @@ public class CollectionController {
             @PathVariable("id") String id,
             Model model) {
         SeedDto seed = seedService.getSeedById(id);
-        String _xray = photoService.encodeBase64("images\\" + seed.getId() + "\\xray.jpg");
-        String _seed = photoService.encodeBase64("images\\" + seed.getId() + "\\seed.jpg");
-        String _ecotop = photoService.encodeBase64("images\\" + seed.getId() + "\\ecotop.jpg");
+        String _xray = photoService.encodeBase64("images\\" + seed.getId() + "\\xray");
+        String _seed = photoService.encodeBase64("images\\" + seed.getId() + "\\seed");
+        String _ecotop = photoService.encodeBase64("images\\" + seed.getId() + "\\ecotop");
         model.addAttribute("seed", seed);
         model.addAttribute("xray", _xray);
         model.addAttribute("seedPh", _seed);
@@ -83,9 +83,9 @@ public class CollectionController {
             Model model
             ) {
         SeedDto seedDto = seedService.getSeedById(id);
-        String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray.jpg");
-        String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed.jpg");
-        String ecotopPhoto = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop.jpg");
+        String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray");
+        String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed");
+        String ecotopPhoto = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop");
         model.addAttribute("seedDto", seedDto);
         model.addAttribute("id", id);
         model.addAttribute("xRay", xRay);
@@ -96,28 +96,28 @@ public class CollectionController {
 
     @PostMapping("edit/id={id}")
     public String saveSeed(
+            @PathVariable(value = "id") String id,
             @Valid @ModelAttribute(value = "seedDto") SeedDto seedDto,
             BindingResult bindingResult,
-            @PathVariable("id") String id,
+            @RequestParam(value = "action") String action,
             @RequestParam(value = "xRay", required = false) MultipartFile xRay,
             @RequestParam(value = "seed", required = false) MultipartFile seed,
-            @RequestParam(value = "ecotopPhoto", required = false) MultipartFile ecotopPhoto
+            @RequestParam(value = "ecotopPhoto", required = false) MultipartFile ecotopPhoto,
+            @RequestParam(value = "deleteXRay", required = false) Boolean deleteXRay,
+            @RequestParam(value = "deleteSeed", required = false) Boolean deleteSeed,
+            @RequestParam(value = "deleteEcotop", required = false) Boolean deleteEcotop
     ) {
-        /*if (bindingResult.hasErrors()) {
-            // Если есть ошибки валидации, верните обратно на страницу редактирования
-            return "editSeed";
-        }*/
-
-        seedService.editSeed(seedDto);
-        photoService.editXRay(xRay, seedDto.getId());
-        photoService.editSeed(seed, seedDto.getId());
-        photoService.editEcotop(ecotopPhoto, seedDto.getId());
-        return "redirect:/collection/id=" + seedDto.getId();
-    }
-
-    @PostMapping("delete/id={id}")
-    public String deleteSeed() {
-        return "redirect:/collection";
+        if ("save".equals(action)) {
+            seedService.editSeed(seedDto);
+            photoService.savePhoto(xRay, id, "xray", deleteXRay);
+            photoService.savePhoto(seed, id, "seed", deleteSeed);
+            photoService.savePhoto(ecotopPhoto, id, "ecotop", deleteEcotop);
+            return "redirect:/collection/id=" + id;
+        } else {
+            photoService.deletePhotos(id);
+            seedService.deleteSeed(id);
+            return "redirect:/collection";
+        }
     }
 
 }

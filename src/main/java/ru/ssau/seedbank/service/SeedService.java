@@ -269,4 +269,8 @@ public class SeedService {
         seedRepository.save(seed);
     }
 
+    public void deleteSeed(String id) {
+        seedRepository.deleteById(id);
+    }
+
 }

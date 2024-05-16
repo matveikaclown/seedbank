@@ -118,3 +118,5 @@ values
     ('SeedGermination'), ('SeedMoisture'), ('GPSLatitude'), ('GPSLongitude'),
     ('GPSAltitude'), ('Ecotop'), ('PestInfestation'), ('Comment'),
     ('PhotoXRay'), ('PhotoSeed'), ('PhotoEcotop');
+
+/*SELECT pg_size_pretty( pg_database_size( 'seedbank' ) );*/
