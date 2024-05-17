@@ -43,13 +43,13 @@ values
 
 insert into "role" (name_of_role)
 values
-    ('Администратор'), ('Личный кабинет');
+    ('ADMIN'), ('USER');
 
 insert into "account" (role_id, first_name, last_name, login, password, patronymic)
 values
-    (1, 'Матвей', 'Привалов', 'matveika', 'matveika', 'Алексеевич'),
-    (2, 'Первый', 'NONE', 'first', 'first', 'NONE'),
-    (2, 'Второй', 'NONE', 'second', 'second', 'NONE');
+    (1, 'Матвей', 'Привалов', 'matveika', '$2a$05$lSvDbE/g/K.YsOCQBrNYY.bQv3CylXF.3cs8ZEPrg1aT6XFWi96oO', 'Алексеевич'),
+    (2, 'Первый', 'NONE', 'first', '$2a$05$lqydbs.cJkhD8MiLu1HUQOqWMf2KIrouSbZ60TsxiKiLL2IbyqG0S', 'NONE'),
+    (2, 'Второй', 'NONE', 'second', '$2a$05$GVWzM/8b68PRQokPIqFV1OwNdbu4HXscWOBDAXU4h8t18ojplInze', 'NONE');
 
 insert into "seed" (account_id, ecotop_id, place_of_collection_id, red_book_rf_id, red_book_so_id, red_list_id, seed_id, specie_id, completed_seeds, pest_infestation, seed_germination, seed_moisture, date_of_collection, gpsaltitude, weight_of1000seeds, number_of_seeds, gpslatitude, gpslongitude, comment, seed_name)
 values
