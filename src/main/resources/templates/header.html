@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head>
+    <title></title>
+    <link href="../static/styles/header.css" th:href="@{/styles/header.css}" rel="stylesheet"/>
+</head>
+<body>
+<header th:fragment="header">
+    <div class="navigation">
+        <div class="name">
+            <a th:href="@{/static}">Банк семян Самарского университета</a>
+        </div>
+        <div class="buttons">
+            <a th:href="@{/atlas}">Атлас</a>
+            <a th:href="@{/collection}">Коллекция</a>
+            <a th:href="@{/articles}">Статьи</a>
+            <a th:href="@{/news}">Новости</a>
+            <a th:href="@{/contacts}">Контакты</a>
+            <a th:href="@{/user}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
+                <span class="username-display"><span sec:authentication="name"></span></span>
+            </a>
+            <a th:href="@{/user}" sec:authorize="!hasAnyAuthority('ADMIN', 'USER')">Личный кабинет</a>
+        </div>
+    </div>
+</header>
+</body>
+</html>

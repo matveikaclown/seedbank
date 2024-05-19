@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Статьи</title>
+    <title></title>
     <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
 </head>
-
 <body>
-<div th:replace="header"></div>
-
-<div th:replace="footer"></div>
-
+<footer th:fragment="footer">
+    <div class="footer-margin"></div>
+</footer>
 </body>
-
 </html>

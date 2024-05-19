@@ -1,48 +1,96 @@
 .seedCard {
-    justify-content: center;
     display: flex;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
 }
-.table {
 
+.full-information {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px; /* Максимальная ширина для контейнера с контентом */
+    margin: 0 auto; /* Выравнивание блока по центру */
+}
+
+.table {
+    flex: 1; /* Занимает все доступное пространство, оставшееся после фотографий */
+    min-width: 0; /* Позволяет таблице сжиматься, если это необходимо */
+    margin-right: 20px; /* Отступ справа от таблицы */
+    overflow-x: auto; /* Позволяет горизонтальную прокрутку, если содержимое выходит за пределы */
     border-collapse: separate;
-    border-spacing: 5px; /* расстояние между ячейками и столбцами */
-    width: 80%;
-    margin: 10px auto;
+    border-spacing: 5px;
 }
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border: 2px solid #ccc;
+    background-color: #fff;
+
+}
+
 td {
-    padding: 10px; /* расстояние внутри ячеек */
-    text-align: center;
-    border: 2px solid #000;
-    background-color: whitesmoke;
+    word-wrap: break-word;  /* Позволяет словам переноситься на новую строку */
+    word-break: break-word; /* Переносит длинные слова на новую строку */
 }
+
 th {
-    padding: 10px; /* расстояние внутри ячеек */
-    text-align: center;
-    background-color: darkgrey;
+    min-width: 120px;
+    background-color: #f0f0f0;
 }
 
 .photos {
+    width: 400px; /* Фиксированная ширина блока с фотографиями */
+    flex-shrink: 0; /* Предотвращает уменьшение размеров блока при нехватке места */
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin-left: 20px; /* Отступ слева от фотографий */
 }
 
 .photo-wrapper {
+    width: 100%; /* Устанавливаем ширину для .photo-wrapper */
+    max-width: 400px; /* Фиксированная максимальная ширина */
     margin-bottom: 20px;
-}
-
-.photo {
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #ccc;
-    padding: 10px;
+    display: flex; /* Используем flex для центрирования и управления потомками */
+    flex-direction: column; /* Элементы расположены вертикально */
+    align-items: center; /* Центрируем элементы по горизонтали */
 }
 
 .photo-caption {
-    margin-top: 10px;
-    text-align: center;
+    width: 100%; /* Заставляем подпись занимать всю ширину .photo-wrapper */
+    text-align: center; /* Текст выровнен по центру */
     border: 1px solid #ccc;
     padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box; /* Включаем padding и border в ширину элемента */
+}
+
+.photo {
+    width: 100%; /* Фотография занимает всю ширину .photo-wrapper */
+    height: auto; /* Высота изменяется пропорционально, сохраняя аспект */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.edit-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 15px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.edit-button:hover {
+    background-color: #3e8e41;
 }

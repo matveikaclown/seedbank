@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                                 "/articles",
                                 "/contacts",
                                 "/news").permitAll()
-                        .requestMatchers("/styles/**", "/img/**").permitAll()
+                        .requestMatchers("/styles/**", "/img/**", "/scripts/**").permitAll()
                         .requestMatchers("/collection/**", "/user**").authenticated()
                         .requestMatchers("/admin**").hasAuthority("ADMIN"))
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)

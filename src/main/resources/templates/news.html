@@ -4,23 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Новости</title>
-    <link href="../static/styles/header.css" th:href="@{/styles/header.css}" rel="stylesheet" />
     <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
 </head>
 
 <body>
-    <div class="navigation">
-        <div class="name">
-            <a th:href="@{/}">Банк семян Самарского университета</a>
-        </div>
-        <div class="buttons">
-            <a th:href="@{/atlas}">Атлас</a>
-            <a th:href="@{/collection}">Коллекция</a>
-            <a th:href="@{/articles}">Статьи</a>
-            <a th:href="@{/news}">Новости</a>
-            <a th:href="@{/contacts}">Контакты</a>
-        </div>
-    </div>
+<div th:replace="header"></div>
+
+<div th:replace="footer"></div>
 </body>
 
 </html>
