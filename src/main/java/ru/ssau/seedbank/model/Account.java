@@ -27,4 +27,7 @@ public class Account {
     private String lastName;      // фамилия
     private String patronymic;    // отчество
 
+    @Column(nullable = false)
+    private Boolean active;
+
 }

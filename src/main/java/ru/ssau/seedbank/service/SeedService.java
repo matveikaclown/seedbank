@@ -1,15 +1,32 @@
 package ru.ssau.seedbank.service;
 
+import com.opencsv.CSVWriter;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.ssau.seedbank.configuration.websecurity.SeedBankUserDetails;
 import ru.ssau.seedbank.dto.AtlasDto;
 import ru.ssau.seedbank.dto.CollectionDto;
 import ru.ssau.seedbank.dto.SeedDto;
 import ru.ssau.seedbank.model.*;
 import ru.ssau.seedbank.repository.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SeedService {
@@ -23,6 +40,8 @@ public class SeedService {
     private final PlaceOfCollectionRepository placeOfCollectionRepository;
     private final EcotopRepository ecotopRepository;
     private final BookLevelRepository bookLevelRepository;
+    private final AccountRepository accountRepository;
+    private final FieldRepository fieldRepository;
 
     @Autowired
     public SeedService(
@@ -34,7 +53,9 @@ public class SeedService {
             RedBookRepository redBookRepository,
             PlaceOfCollectionRepository placeOfCollectionRepository,
             EcotopRepository ecotopRepository,
-            BookLevelRepository bookLevelRepository) {
+            BookLevelRepository bookLevelRepository,
+            AccountRepository accountRepository,
+            FieldRepository fieldRepository) {
         this.seedRepository = seedRepository;
         this.familyRepository = familyRepository;
         this.genusRepository = genusRepository;
@@ -44,6 +65,8 @@ public class SeedService {
         this.placeOfCollectionRepository = placeOfCollectionRepository;
         this.ecotopRepository = ecotopRepository;
         this.bookLevelRepository = bookLevelRepository;
+        this.accountRepository = accountRepository;
+        this.fieldRepository = fieldRepository;
     }
 
     private static Page<CollectionDto> getCollectionDtos(Page<Seed> page) {
@@ -164,7 +187,39 @@ public class SeedService {
         }
         seedDto.setPestInfestation(seed.getPestInfestation());
         seedDto.setComment(seed.getComment());
-        return seedDto;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+                Set<Field> hiddenFields = fieldRepository.findAllBySeedsContains(seed);
+                Set<String> hidden = hiddenFields.stream()
+                        .map(Field::getField)
+                        .collect(Collectors.toSet());
+                if (hidden.contains("id")) seedDto.setId(null);
+                if (hidden.contains("seedName")) seedDto.setSeedName(null);
+                if (hidden.contains("family")) seedDto.setFamily(null);
+                if (hidden.contains("genus")) seedDto.setGenus(null);
+                if (hidden.contains("specie")) seedDto.setSpecie(null);
+                if (hidden.contains("redList")) seedDto.setRedList(null);
+                if (hidden.contains("redBookRF")) seedDto.setRedBookRF(null);
+                if (hidden.contains("redBookSO")) seedDto.setRedBookSO(null);
+                if (hidden.contains("dateOfCollection")) seedDto.setDateOfCollection(null);
+                if (hidden.contains("placeOfCollection")) seedDto.setPlaceOfCollection(null);
+                if (hidden.contains("weightOf1000Seeds")) seedDto.setWeightOf1000Seeds(null);
+                if (hidden.contains("numberOfSeeds")) seedDto.setNumberOfSeeds(null);
+                if (hidden.contains("completedSeeds")) seedDto.setCompletedSeeds(null);
+                if (hidden.contains("seedGermination")) seedDto.setSeedGermination(null);
+                if (hidden.contains("seedMoisture")) seedDto.setSeedMoisture(null);
+                if (hidden.contains("GPS")) {
+                    seedDto.setGPSLatitude(null);
+                    seedDto.setGPSLongitude(null);
+                    seedDto.setGPSAltitude(null);
+                }
+                if (hidden.contains("ecotop")) seedDto.setEcotop(null);
+                if (hidden.contains("pestInfestation")) seedDto.setPestInfestation(null);
+                if (hidden.contains("comment")) seedDto.setComment(null);
+            }
+
+            return seedDto;
     }
 
     public String addNewSeed(String id) {
@@ -175,7 +230,10 @@ public class SeedService {
             id += String.valueOf(suffix);
         }
         Seed seed = new Seed();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SeedBankUserDetails userDetails = (SeedBankUserDetails) authentication.getPrincipal();
         seed.setSeedId(id);
+        seed.setAccount(accountRepository.findAccountByAccountId(userDetails.getAccountId()));
         seedRepository.save(seed);
         return id;
     }
@@ -271,6 +329,67 @@ public class SeedService {
 
     public void deleteSeed(String id) {
         seedRepository.deleteById(id);
+    }
+
+    public ResponseEntity<byte[]> exportAllCsv() {
+        List<Seed> seeds = seedRepository.findAll();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            byteArrayOutputStream.write(new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF});
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body("Error occurred while generating CSV file.".getBytes(StandardCharsets.UTF_8));
+        }
+        try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, StandardCharsets.UTF_8);
+             CSVWriter csvWriter = new CSVWriter(outputStreamWriter, ';', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END)) {
+            // Заголовки CSV файла
+            String[] header = {
+                    "ID", "Название", "Семейство", "Род", "Вид", "Красный список",
+                    "Красная книга РФ", "Красная книга Самарской области", "Дата сбора",
+                    "Место сбора", "Масса 1000 семян, г", "Количество семян, шт", "Выполненные семена, %",
+                    "Всхожесть семян, %", "Влажность семян, %", "GPS, N, E, H", "Экотоп",
+                    "Заселенность вредителями, %", "Комментарий"
+            };
+            csvWriter.writeNext(header);
+            for (Seed seed : seeds) {
+                String[] data = {
+                        seed.getSeedId(),
+                        seed.getSeedName(),
+                        seed.getSpecie().getGenus().getFamily().getNameOfFamily(),
+                        seed.getSpecie().getGenus().getNameOfGenus(),
+                        seed.getSpecie().getNameOfSpecie(),
+                        seed.getRed_list().getCategory(),
+                        seed.getRed_book_rf().getCategory(),
+                        seed.getRed_book_so().getCategory(),
+                        seed.getDateOfCollection().toString(),
+                        seed.getPlace_of_collection().getPlaceOfCollection(),
+                        seed.getWeightOf1000Seeds(),
+                        seed.getNumberOfSeeds(),
+                        seed.getCompletedSeeds(),
+                        seed.getSeedGermination(),
+                        seed.getSeedMoisture(),
+                        seed.getGPSLatitude() + "/" + seed.getGPSLongitude() + "/" + seed.getGPSAltitude(),
+                        seed.getEcotop().getNameOfEcotop(),
+                        seed.getPestInfestation(),
+                        seed.getComment()
+                };
+                csvWriter.writeNext(data);
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body("Error occurred while generating CSV file.".getBytes(StandardCharsets.UTF_8));
+        }
+
+        byte[] csvContent = byteArrayOutputStream.toByteArray();
+
+        // Устанавливаем необходимые заголовки для загрузки файла
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=seedbank.csv");
+        headers.setContentType(MediaType.TEXT_PLAIN);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(csvContent);
     }
 
 }

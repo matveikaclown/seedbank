@@ -10,7 +10,7 @@
 <header th:fragment="header">
     <div class="navigation">
         <div class="name">
-            <a th:href="@{/static}">Банк семян Самарского университета</a>
+            <a th:href="@{/}">Банк семян Самарского университета</a>
         </div>
         <div class="buttons">
             <a th:href="@{/atlas}">Атлас</a>
@@ -19,7 +19,7 @@
             <a th:href="@{/news}">Новости</a>
             <a th:href="@{/contacts}">Контакты</a>
             <a th:href="@{/user}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
-                <span class="username-display"><span sec:authentication="name"></span></span>
+                <span class="username-display"><span th:text="${#strings.toUpperCase(#authentication.name)}"></span></span>
             </a>
             <a th:href="@{/user}" sec:authorize="!hasAnyAuthority('ADMIN', 'USER')">Личный кабинет</a>
         </div>

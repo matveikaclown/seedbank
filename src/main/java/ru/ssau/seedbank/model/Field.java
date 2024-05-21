@@ -15,7 +15,7 @@ public class Field {
     @Column(name = "field_id")
     private Long fieldId;  // ID виддимости
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "fields")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "fields")
     private Set<Seed> seeds;
 
     String field;               // поле

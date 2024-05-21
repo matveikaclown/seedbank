@@ -2,9 +2,15 @@ package ru.ssau.seedbank.service;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.seedbank.dto.AtlasDto;
+import ru.ssau.seedbank.model.Field;
+import ru.ssau.seedbank.repository.FieldRepository;
+import ru.ssau.seedbank.repository.SeedRepository;
 
 import java.io.IOException;
 import java.io.File;
@@ -12,10 +18,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 public class PhotoService {
+
+    private final FieldRepository fieldRepository;
+    private final SeedRepository seedRepository;
+
+    public PhotoService(FieldRepository fieldRepository, SeedRepository seedRepository) {
+        this.fieldRepository = fieldRepository;
+        this.seedRepository = seedRepository;
+    }
 
     private static byte[] findImageBytes(String path) {
         Path pngPath = Paths.get(path + ".png");
@@ -52,7 +68,26 @@ public class PhotoService {
         if (!directory.delete()) System.out.println("Не удалось удалить папку: " + directory.getAbsolutePath());
     }
 
-    public String encodeBase64(String path) {
+    public String encodeBase64(String path, String type, String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            Set<Field> hiddenFields = fieldRepository.findAllBySeedsContains(seedRepository.findById(id).orElseThrow(() -> new RuntimeException("Seed not found")));
+            Set<String> hidden = hiddenFields.stream()
+                    .map(Field::getField)
+                    .collect(Collectors.toSet());
+            switch (type) {
+                case "xray":
+                    if(hidden.contains("photoXRay")) return Base64.encodeBase64String(new byte[0]);
+                    break;
+                case "seed":
+                    if(hidden.contains("photoSeed")) return Base64.encodeBase64String(new byte[0]);
+                    break;
+                case "ecotop":
+                    if(hidden.contains("photoEcotop")) return Base64.encodeBase64String(new byte[0]);
+                    break;
+            }
+        }
+
         byte[] bytes = findImageBytes(path);
 
         return Base64.encodeBase64String(bytes);

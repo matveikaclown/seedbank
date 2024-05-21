@@ -47,8 +47,8 @@ public class WebSecurityConfig {
                                 "/contacts",
                                 "/news").permitAll()
                         .requestMatchers("/styles/**", "/img/**", "/scripts/**").permitAll()
-                        .requestMatchers("/collection/**", "/user**").authenticated()
-                        .requestMatchers("/admin**").hasAuthority("ADMIN"))
+                        .requestMatchers("/collection/**", "/user").authenticated()
+                        .requestMatchers("/user/**").hasAuthority("ADMIN"))
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
     }

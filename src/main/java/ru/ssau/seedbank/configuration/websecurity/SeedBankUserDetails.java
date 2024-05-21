@@ -54,4 +54,20 @@ public class SeedBankUserDetails implements UserDetails {
         return true;
     }
 
+    public String getFirstName() {
+        return account.getFirstName();
+    }
+
+    public boolean isAdmin() {
+        return  account.getRole().getNameOfRole().equals("ADMIN");
+    }
+
+    public Account getAccount() {
+        return this.account;
+    }
+
+    public Integer getAccountId() {
+        return account.getAccountId();
+    }
+
 }

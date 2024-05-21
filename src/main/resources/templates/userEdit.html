@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить пользователя</title>
+    <link href="../static/styles/userEdit.css" th:href="@{/styles/userEdit.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="header"></div>
+
+<div>
+    <div>
+        <input type="hidden" name="id" th:value="${user.accountId}" readonly>
+    </div>
+    <div class="editInfo">
+        <form th:action="@{/user/edit/id={id}/info(id=${user.getAccountId()})}" method="post">
+            <div>
+                <label for="firstName">Имя:</label>
+                <input type="text" id="firstName" name="firstName" th:value="${user.firstName}" required>
+            </div>
+            <div>
+                <label for="lastName">Фамилия:</label>
+                <input type="text" id="lastName" name="lastName" th:value="${user.lastName}">
+            </div>
+            <div>
+                <label for="patronymic">Отчество:</label>
+                <input type="text" id="patronymic" name="patronymic" th:value="${user.patronymic}">
+            </div>
+            <div>
+                <label for="login">Логин:</label>
+                <input type="text" id="login" name="login" th:value="${user.login}" required>
+            </div>
+            <div>
+                <button type="submit">Сохранить изменения</button>
+            </div>
+        </form>
+    </div>
+    <div class="editPswrd">
+        <form th:action="@{/user/edit/id={id}/pswrd(id=${user.getAccountId()})}" method="post">
+            <div>
+                <label for="newPassword">Новый пароль:</label>
+                <input type="password" id="newPassword" name="pswrd" required>
+            </div>
+            <div>
+                <label for="confirmPassword">Подтвердите пароль:</label>
+                <input type="password" id="confirmPassword" name="pswrdConfirm" required>
+            </div>
+            <div>
+                <button type="submit">Изменить пароль</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="footer"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const logins = /*[[${users.![login]}]]*/ [];
+    const currentLogin = /*[[${user.login}]]*/ 'defaultLogin';
+    /*]]>*/
+</script>
+<script th:src="@{/scripts/userEdit.js}"></script>
+</body>
+</html>

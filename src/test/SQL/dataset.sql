@@ -45,11 +45,12 @@ insert into "role" (name_of_role)
 values
     ('ADMIN'), ('USER');
 
-insert into "account" (role_id, first_name, last_name, login, password, patronymic)
+insert into "account" (role_id, first_name, last_name, login, password, patronymic, active)
 values
-    (1, 'Матвей', 'Привалов', 'matveika', '$2a$05$lSvDbE/g/K.YsOCQBrNYY.bQv3CylXF.3cs8ZEPrg1aT6XFWi96oO', 'Алексеевич'),
-    (2, 'Первый', 'NONE', 'first', '$2a$05$lqydbs.cJkhD8MiLu1HUQOqWMf2KIrouSbZ60TsxiKiLL2IbyqG0S', 'NONE'),
-    (2, 'Второй', 'NONE', 'second', '$2a$05$GVWzM/8b68PRQokPIqFV1OwNdbu4HXscWOBDAXU4h8t18ojplInze', 'NONE');
+    (1, 'Матвей', 'Привалов', 'matveika', '$2a$05$lSvDbE/g/K.YsOCQBrNYY.bQv3CylXF.3cs8ZEPrg1aT6XFWi96oO', 'Алексеевич', true),
+    (2, 'Александр', 'Пушкин', 'first', '$2a$05$lqydbs.cJkhD8MiLu1HUQOqWMf2KIrouSbZ60TsxiKiLL2IbyqG0S', 'Сергеевич', true),
+    (2, 'Лиля', 'Брик', 'second', '$2a$05$GVWzM/8b68PRQokPIqFV1OwNdbu4HXscWOBDAXU4h8t18ojplInze', 'Юрьевна', true),
+    (1, 'Павел', 'Нахимов', 'psnahimov', '$2a$05$lSvDbE/g/K.YsOCQBrNYY.bQv3CylXF.3cs8ZEPrg1aT6XFWi96oO', 'Степанович', true);
 
 insert into "seed" (account_id, ecotop_id, place_of_collection_id, red_book_rf_id, red_book_so_id, red_list_id, seed_id, specie_id, completed_seeds, pest_infestation, seed_germination, seed_moisture, date_of_collection, gpsaltitude, weight_of1000seeds, number_of_seeds, gpslatitude, gpslongitude, comment, seed_name)
 values
@@ -112,11 +113,17 @@ values
 
 insert into "field" (field)
 values
-    ('ID'), ('Family'), ('Genus'), ('Specie'),
-    ('RedList'), ('RedBookRF'), ('RedBookSO'), ('DateOfCollection'),
-    ('PlaceOfColletcion'), ('WeightOf1000Seeds'), ('NumberOfSeeds'), ('CompletedSeeds'),
-    ('SeedGermination'), ('SeedMoisture'), ('GPSLatitude'), ('GPSLongitude'),
-    ('GPSAltitude'), ('Ecotop'), ('PestInfestation'), ('Comment'),
-    ('PhotoXRay'), ('PhotoSeed'), ('PhotoEcotop');
+    ('id'), ('seedName'), ('family'),
+    ('genus'), ('specie'), ('redList'),
+    ('redBookRF'), ('redBookSO'), ('dateOfCollection'),
+    ('placeOfCollection'), ('weightOf1000Seeds'), ('numberOfSeeds'),
+    ('completedSeeds'), ('seedGermination'), ('seedMoisture'),
+    ('GPS'),('ecotop'), ('pestInfestation'),
+    ('comment'), ('photoSeed'), ('photoXRay'),
+    ('photoEcotop');
+
+insert into "seed_field" (seed_id, field_id)
+values
+    ('1-2-3-4', 21), ('1-2-3-4', 22), ('1-2-3-4', 19), ('1-2-3-4', 3)
 
 /*SELECT pg_size_pretty( pg_database_size( 'seedbank' ) );*/

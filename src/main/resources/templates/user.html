@@ -1,12 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Личный кабинет</title>
+    <link href="../static/styles/user.css" th:href="@{/styles/user.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="header"></div>
 
+<div class="main">
+    <div class="greeting">
+        <div>
+            <h1 th:text="${greeting} + ', ' + ${firstName} + '!'"></h1>
+        </div>
+        <div>
+            <a th:href="@{/logout}">Выйти</a>
+        </div>
+    </div>
+    <div>
+        <div class="addSeed">
+            <a th:href="@{/collection/add}">Добавить новое семя</a>
+            <a th:href="@{/collection/get/all}">Экспорт полного набора данных</a>
+        </div>
+    </div>
+    <div class="account-table-section" th:if="${admins}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="7"><strong>Администраторы</strong></td>
+            </tr>
+            <tr th:each="admin : ${admins}">
+                <td th:text="${admin.getAccountId}"></td>
+                <td th:text="${admin.login}"></td>
+                <td th:text="${admin.lastName}"></td>
+                <td th:text="${admin.firstName}"></td>
+                <td th:text="${admin.patronymic}"></td>
+                <td><a th:if="${admin.getAccountId == userId}" th:href="@{/user/edit/id={id}(id=${admin.accountId})}">Изменить</a></td>
+                <td></td>
+            </tr>
+            <tr th:if="${users}">
+                <td colspan="7"><strong>Пользователи</strong></td>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.getAccountId}"></td>
+                <td th:text="${user.login}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.patronymic}"></td>
+                <td><a th:href="@{/user/edit/id={id}(id=${user.getAccountId()})}">Изменить</a> </td>
+                <td>
+                    <form th:action="@{/user/delete/id={id}(id=${user.getAccountId()})}" method="post">
+                        <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить пользователя?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="newUserForm" th:if="${admins}">
+        <div class="newUser">
+            <p>Добавление нового пользователя</p>
+            <form th:action="@{/user/add}" method="post">
+                <div>
+                    <label for="firstName">Имя:</label>
+                    <input type="text" id="firstName" name="newFirstName" required>
+                </div>
+                <div>
+                    <label for="lastName">Фамилия:</label>
+                    <input type="text" id="lastName" name="newLastName">
+                </div>
+                <div>
+                    <label for="patronymic">Отчество:</label>
+                    <input type="text" id="patronymic" name="newPatronymic">
+                </div>
+                <div>
+                    <label for="login">Логин:</label>
+                    <input type="text" id="login" name="newLogin" required>
+                </div>
+                <div>
+                    <label for="newPassword">Новый пароль:</label>
+                    <input type="password" id="newPassword" name="newPswrd" required>
+                </div>
+                <div>
+                    <label for="confirmPassword">Подтвердите пароль:</label>
+                    <input type="password" id="confirmPassword" name="newPswrdConfirm" required>
+                </div>
+                <div>
+                    <button type="submit">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div th:replace="footer"></div>
+
+<script th:if="${admins}" th:inline="javascript">
+    /*<![CDATA[*/
+    const allUserLogins = /*[[${users.![login]}]]*/ []; // Массив логинов всех пользователей
+    const adminLogins = /*[[${admins.![login]}]]*/ []; // Массив логинов администраторов
+
+    // Объединяем все логины в один массив для проверки
+    const AllLogins = allUserLogins.concat(adminLogins);
+    /*]]>*/
+</script>
+<script th:src="@{/scripts/user.js}"></script>
 </body>
 </html>

@@ -45,7 +45,7 @@ public class Seed {
     @JoinColumn(name = "ecotop_id")
     private Ecotop ecotop;                // ID экотопа
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "seed_field",
             joinColumns = @JoinColumn(name = "seed_id", referencedColumnName = "seed_id"),
             inverseJoinColumns = @JoinColumn(name = "field_id", referencedColumnName = "field_id"))

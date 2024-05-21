@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,9 +51,9 @@ public class CollectionController {
             @PathVariable("id") String id,
             Model model) {
         SeedDto seed = seedService.getSeedById(id);
-        String _xray = photoService.encodeBase64("images\\" + seed.getId() + "\\xray");
-        String _seed = photoService.encodeBase64("images\\" + seed.getId() + "\\seed");
-        String _ecotop = photoService.encodeBase64("images\\" + seed.getId() + "\\ecotop");
+        String _xray = photoService.encodeBase64("images\\" + seed.getId() + "\\xray", "xray", id);
+        String _seed = photoService.encodeBase64("images\\" + seed.getId() + "\\seed", "seed", id);
+        String _ecotop = photoService.encodeBase64("images\\" + seed.getId() + "\\ecotop", "ecotop", id);
         model.addAttribute("seed", seed);
         model.addAttribute("xray", _xray);
         model.addAttribute("seedPh", _seed);
@@ -74,7 +75,7 @@ public class CollectionController {
             @RequestParam(value = "delectus") String delectus) {
         String id = taxon + "-" + place + "-" + year + "-" + delectus;
         id = seedService.addNewSeed(id);
-        return "redirect:/collection/edit/id=" + id; /*TODO сделать норм перенаправление*/
+        return "redirect:/collection/edit/id=" + id;
     }
 
     @GetMapping("/edit/id={id}")
@@ -83,9 +84,9 @@ public class CollectionController {
             Model model
             ) {
         SeedDto seedDto = seedService.getSeedById(id);
-        String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray");
-        String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed");
-        String ecotopPhoto = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop");
+        String xRay = photoService.encodeBase64("images\\" + seedDto.getId() + "\\xray", "", "");
+        String seed = photoService.encodeBase64("images\\" + seedDto.getId() + "\\seed", "", "");
+        String ecotopPhoto = photoService.encodeBase64("images\\" + seedDto.getId() + "\\ecotop", "", "");
         model.addAttribute("seedDto", seedDto);
         model.addAttribute("id", id);
         model.addAttribute("xRay", xRay);
@@ -94,7 +95,7 @@ public class CollectionController {
         return "editSeed";
     }
 
-    @PostMapping("edit/id={id}")
+    @PostMapping("/edit/id={id}")
     public String saveSeed(
             @PathVariable(value = "id") String id,
             @Valid @ModelAttribute(value = "seedDto") SeedDto seedDto,
@@ -118,6 +119,11 @@ public class CollectionController {
             seedService.deleteSeed(id);
             return "redirect:/collection";
         }
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<byte[]> getAll() {
+        return seedService.exportAllCsv();
     }
 
 }
