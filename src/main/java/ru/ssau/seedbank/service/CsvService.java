@@ -24,7 +24,7 @@ public class CsvService {
         this.seedRepository = seedRepository;
     }
 
-    private static void getSeedData(Seed seed, String[] data) {
+    private static void getSeedData(Seed seed, String[] data) { /*TODO - it returns null*/
         data[0] = seed.getSeedId();
         data[1] = seed.getSeedName();
         data[2] = seed.getSpecie().getGenus().getFamily().getNameOfFamily();
@@ -33,7 +33,8 @@ public class CsvService {
         data[5] = seed.getRed_list().getCategory();
         data[6] = seed.getRed_book_rf().getCategory();
         data[7] = seed.getRed_book_so().getCategory();
-        data[8] = seed.getDateOfCollection().toString();
+        if (seed.getDateOfCollection() != null) data[8] = seed.getDateOfCollection().toString();
+        else data[8] = "";
         data[9] = seed.getPlace_of_collection().getPlaceOfCollection();
         data[10] = seed.getWeightOf1000Seeds();
         data[11] = seed.getNumberOfSeeds();
