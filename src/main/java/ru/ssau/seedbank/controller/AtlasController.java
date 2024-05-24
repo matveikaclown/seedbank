@@ -16,20 +16,8 @@ import ru.ssau.seedbank.service.SeedService;
 @RequestMapping("/atlas")
 public class AtlasController {
 
-    private final SeedService seedService;
-    private final PhotoService photoService;
-
-    @Autowired
-    public AtlasController(SeedService seedService, PhotoService photoService) {
-        this.seedService = seedService;
-        this.photoService = photoService;
-    }
-
     @GetMapping
-    public String atlas(@PageableDefault(value = 20, sort = /*{"seedName"}*/ {"seedId"}) Pageable pageable, Model model) {
-        Page<AtlasDto> seeds = seedService.getAllAtlasSeeds(pageable);
-        model.addAttribute("seeds", seeds);
-        model.addAttribute("seedPhotos", photoService.getAllPhotos(seeds));
+    public String atlas() {
         return "atlas";
     }
 

@@ -109,6 +109,7 @@
     </div>
     <div sec:authorize="hasAnyAuthority('ADMIN', 'USER')">
         <a class="edit-button" th:href="@{/collection/edit/id={id}(id=${seed.getId()})}">Редактировать</a>
+        <a class="export-button" th:href="@{/collection/get/id={id}(id=${seed.getId()})}">Экспорт</a>
     </div>
 </div>
 

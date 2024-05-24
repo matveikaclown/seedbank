@@ -24,7 +24,7 @@
                 <input type="text" th:field="*{id}" readonly />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['id']}"/>
             </label></td>
         </tr>
         <tr>
@@ -33,7 +33,7 @@
                 <input type="text" th:field="*{seedName}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['seedName']}"/>
             </label></td>
         </tr>
         <tr>
@@ -42,7 +42,7 @@
                 <input type="text" th:field="*{family}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['family']}"/>
             </label></td>
         </tr>
         <tr>
@@ -51,7 +51,7 @@
                 <input type="text" th:field="*{genus}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['genus']}"/>
             </label></td>
         </tr>
         <tr>
@@ -60,7 +60,7 @@
                 <input type="text" th:field="*{specie}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['specie']}"/>
             </label></td>
         </tr>
         <tr>
@@ -69,7 +69,7 @@
                 <input type="text" th:field="*{redList}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['redList']}"/>
             </label></td>
         </tr>
         <tr>
@@ -78,7 +78,7 @@
                 <input type="text" th:field="*{redBookRF}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['redBookRF']}"/>
             </label></td>
         </tr>
         <tr>
@@ -87,7 +87,7 @@
                 <input type="text" th:field="*{redBookSO}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['redBookSO']}"/>
             </label></td>
         </tr>
         <tr>
@@ -96,7 +96,7 @@
                 <input type="text" th:field="*{dateOfCollection}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['dateOfCollection']}"/>
             </label></td>
         </tr>
         <tr>
@@ -105,7 +105,7 @@
                 <input type="text" th:field="*{placeOfCollection}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['placeOfCollection']}"/>
             </label></td>
         </tr>
         <tr>
@@ -114,7 +114,7 @@
                 <input type="text" th:field="*{weightOf1000Seeds}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['weightOf1000Seeds']}"/>
             </label></td>
         </tr>
         <tr>
@@ -123,7 +123,7 @@
                 <input type="text" th:field="*{numberOfSeeds}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['numberOfSeeds']}"/>
             </label></td>
         </tr>
         <tr>
@@ -132,7 +132,7 @@
                 <input type="text" th:field="*{completedSeeds}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['completedSeeds']}"/>
             </label></td>
         </tr>
         <tr>
@@ -141,7 +141,7 @@
                 <input type="text" th:field="*{seedGermination}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['seedGermination']}"/>
             </label></td>
         </tr>
         <tr>
@@ -150,7 +150,7 @@
                 <input type="text" th:field="*{seedMoisture}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['seedMoisture']}"/>
             </label></td>
         </tr>
         <tr>
@@ -159,7 +159,7 @@
                 <input type="text" th:field="*{GPSLatitude}" />
             </label></td>
             <td rowspan="3"><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['GPS']}"/>
             </label></td>
         </tr>
         <tr>
@@ -180,7 +180,7 @@
                 <input type="text" th:field="*{ecotop}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['ecotop']}"/>
             </label></td>
         </tr>
         <tr>
@@ -189,7 +189,7 @@
                 <input type="text" th:field="*{pestInfestation}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['pestInfestation']}"/>
             </label></td>
         </tr>
         <tr>
@@ -198,7 +198,7 @@
                 <input type="text" th:field="*{comment}" />
             </label></td>
             <td><label>
-                <input type="checkbox" />
+                <input type="checkbox" th:field="*{fields['comment']}"/>
             </label></td>
         </tr>
         <!-- Изображения -->
@@ -215,7 +215,7 @@
                 </div>
             </td>
             <td><label>
-                    <input type="checkbox" />
+                    <input type="checkbox" th:field="*{fields['photoXRay']}"/>
             </label></td>
         </tr>
         <tr>
@@ -231,7 +231,7 @@
                 </div>
             </td>
             <td><label>
-                    <input type="checkbox" />
+                    <input type="checkbox" th:field="*{fields['photoSeed']}"/>
             </label></td>
         </tr>
         <tr>
@@ -247,8 +247,15 @@
                 </div>
             </td>
             <td><label>
-                    <input type="checkbox" />
+                    <input type="checkbox" th:field="*{fields['photoEcotop']}"/>
             </label></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <label>Скрыть из поиска
+                    <input type="checkbox" th:field="*{isHidden}">
+                </label>
+            </td>
         </tr>
     </table>
 

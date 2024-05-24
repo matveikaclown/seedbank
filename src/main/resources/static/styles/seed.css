@@ -76,8 +76,8 @@ th {
     border-radius: 10px;
 }
 
-.edit-button {
-    display: block;
+.edit-button, .export-button {
+    display: inline-block;
     width: 200px;
     margin: 20px auto;
     padding: 15px 30px;
@@ -91,6 +91,6 @@ th {
     text-align: center;
 }
 
-.edit-button:hover {
+.edit-button:hover, .export-button:hover {
     background-color: #3e8e41;
 }

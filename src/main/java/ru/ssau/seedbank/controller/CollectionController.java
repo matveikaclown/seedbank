@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.seedbank.dto.SeedDto;
+import ru.ssau.seedbank.service.CsvService;
 import ru.ssau.seedbank.service.PhotoService;
 import ru.ssau.seedbank.service.SeedService;
 
@@ -20,11 +21,13 @@ public class CollectionController {
 
     private final SeedService seedService;
     private final PhotoService photoService;
+    private final CsvService csvService;
 
     @Autowired
-    public CollectionController(SeedService seedService, PhotoService photoService) {
+    public CollectionController(SeedService seedService, PhotoService photoService, CsvService csvService) {
         this.seedService = seedService;
         this.photoService = photoService;
+        this.csvService = csvService;
     }
 
     @GetMapping
@@ -123,7 +126,12 @@ public class CollectionController {
 
     @GetMapping("/get/all")
     public ResponseEntity<byte[]> getAll() {
-        return seedService.exportAllCsv();
+        return csvService.exportAllCsv();
+    }
+
+    @GetMapping("/get/id={id}")
+    public ResponseEntity<byte[]> getSeed(@PathVariable(value = "id") String id) {
+        return csvService.exportSeedCsv(id);
     }
 
 }

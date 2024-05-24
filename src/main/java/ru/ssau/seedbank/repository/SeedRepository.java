@@ -12,7 +12,14 @@ public interface SeedRepository extends JpaRepository<Seed, String> {
     @Query("SELECT s FROM Seed s " +
             "WHERE (:specie IS NULL OR s.specie.nameOfSpecie ILIKE :specie) " +
             "AND (:genus IS NULL OR s.specie.genus.nameOfGenus ILIKE :genus) " +
-            "AND (:family IS NULL OR s.specie.genus.family.nameOfFamily ILIKE :family)")
-    Page<Seed> findSeedsBySpecieAndGenusAndFamily(@Param("specie") String specie, @Param("genus") String genus, @Param("family") String family, Pageable pageable);
+            "AND (:family IS NULL OR s.specie.genus.family.nameOfFamily ILIKE :family)" +
+            "AND (COALESCE(s.isHidden, false) = false OR :authorized = true)")
+    Page<Seed> findSeedsBySpecieAndGenusAndFamily(@Param("specie") String specie,
+                                                  @Param("genus") String genus,
+                                                  @Param("family") String family,
+                                                  @Param("authorized") Boolean authorized,
+                                                  Pageable pageable);
+
+    Page<Seed> findAllByIsHiddenIsFalseOrIsHiddenIsNull(Pageable pageable);
 
 }

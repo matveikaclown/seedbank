@@ -1,30 +1,21 @@
 package ru.ssau.seedbank.service;
 
-import com.opencsv.CSVWriter;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.ssau.seedbank.configuration.websecurity.SeedBankUserDetails;
-import ru.ssau.seedbank.dto.AtlasDto;
 import ru.ssau.seedbank.dto.CollectionDto;
+import ru.ssau.seedbank.dto.FieldsDto;
 import ru.ssau.seedbank.dto.SeedDto;
 import ru.ssau.seedbank.model.*;
 import ru.ssau.seedbank.repository.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,7 +60,7 @@ public class SeedService {
         this.fieldRepository = fieldRepository;
     }
 
-    private static Page<CollectionDto> getCollectionDtos(Page<Seed> page) {
+    private Page<CollectionDto> getCollectionDtos(Page<Seed> page, Boolean auth) {
         return page.map(seed -> {
             CollectionDto collectionDto = new CollectionDto();
 
@@ -103,29 +94,54 @@ public class SeedService {
                 collectionDto.setRedList("");
             }
 
+            if (!auth) {
+                Set<Field> hiddenFields = fieldRepository.findAllBySeedsContains(seed);
+                Set<String> hidden = hiddenFields.stream()
+                        .map(Field::getField)
+                        .collect(Collectors.toSet());
+                if (hidden.contains("id")) collectionDto.setId(null);
+                if (hidden.contains("redBookRF")) collectionDto.setRedBookRF(null);
+                if (hidden.contains("family")) collectionDto.setFamily(null);
+                if (hidden.contains("genus")) collectionDto.setGenus(null);
+                if (hidden.contains("specie")) collectionDto.setSpecie(null);
+                if (hidden.contains("redList")) collectionDto.setRedList(null);
+            }
+
             return collectionDto;
         });
     }
 
-    public Page<CollectionDto> getAllCollectionSeeds(Pageable pageable) {
-        Page<Seed> page = seedRepository.findAll(pageable);
-        return getCollectionDtos(page);
+    private static boolean isAuthorize() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
     }
 
-    public Page<AtlasDto> getAllAtlasSeeds(Pageable pageable) {
-        Page<Seed> page = seedRepository.findAll(pageable);
-        return page.map(seed -> new AtlasDto(
-                seed.getSeedId(),
-                seed.getSeedName()
-        ));
+    private void optimizeDB(Integer familyId, Integer genusId, Integer specieId, Integer redListId, Integer redBookRFId, Integer redBookSOId, Integer placeOfCollectionId, Integer ecotopId) {
+        if (specieId != null && !specieRepository.existsAnySeed(specieId)) specieRepository.deleteById(specieId);
+        if (genusId != null && !genusRepository.existsAnySpecie(genusId)) genusRepository.deleteById(genusId);
+        if (familyId != null && !familyRepository.existsAnyGenus(familyId)) familyRepository.deleteById(familyId);
+        if (redListId != null && !redListRepository.existsAnySeed(redListId)) redListRepository.deleteById(redListId);
+        if (redBookRFId != null && !redBookRepository.existsAnySeedRF(redBookRFId)) redBookRepository.deleteById(redBookRFId);
+        if (redBookSOId != null && !redBookRepository.existsAnySeedSO(redBookSOId)) redBookRepository.deleteById(redBookSOId);
+        if (placeOfCollectionId != null && !placeOfCollectionRepository.existsAnySeed(placeOfCollectionId)) placeOfCollectionRepository.deleteById(placeOfCollectionId);
+        if (ecotopId != null && !ecotopRepository.existsAnySeed(ecotopId)) ecotopRepository.deleteById(ecotopId);
+    }
+
+    public Page<CollectionDto> getAllCollectionSeeds(Pageable pageable) {
+        boolean auth = isAuthorize();
+        Page<Seed> page;
+        if (auth) page = seedRepository.findAll(pageable);
+        else page = seedRepository.findAllByIsHiddenIsFalseOrIsHiddenIsNull(pageable);
+        return getCollectionDtos(page, auth);
     }
 
     public Page<CollectionDto> getAllCollectionSeedsByParams(String specie, String genus, String family, Pageable pageable) {
+        boolean auth = isAuthorize();
         specie = specie == null ? null : "%" + specie + "%";
         genus = genus == null ? null : "%" + genus + "%";
         family = family == null ? null : "%" + family + "%";
-        Page<Seed> page = seedRepository.findSeedsBySpecieAndGenusAndFamily(specie, genus, family, pageable);
-        return getCollectionDtos(page);
+        Page<Seed> page = seedRepository.findSeedsBySpecieAndGenusAndFamily(specie, genus, family, auth, pageable);
+        return getCollectionDtos(page, auth);
     }
 
     public SeedDto getSeedById(String id) {
@@ -188,36 +204,68 @@ public class SeedService {
         seedDto.setPestInfestation(seed.getPestInfestation());
         seedDto.setComment(seed.getComment());
 
+        Set<Field> hiddenFields = fieldRepository.findAllBySeedsContains(seed);
+        Set<String> hidden = hiddenFields.stream()
+                .map(Field::getField)
+                .collect(Collectors.toSet());
+        FieldsDto fieldsDto = new FieldsDto();
+        HashMap<String, Boolean> fields = fieldsDto.getFields();
+
+        if (hidden.contains("id")) fields.put("id", true);
+        if (hidden.contains("seedName")) fields.put("seedName", true);
+        if (hidden.contains("family")) fields.put("family", true);
+        if (hidden.contains("genus")) fields.put("genus", true);
+        if (hidden.contains("specie")) fields.put("specie", true);
+        if (hidden.contains("redList")) fields.put("redList", true);
+        if (hidden.contains("redBookRF")) fields.put("redBookRF", true);
+        if (hidden.contains("redBookSO")) fields.put("redBookSO", true);
+        if (hidden.contains("dateOfCollection")) fields.put("dateOfCollection", true);
+        if (hidden.contains("placeOfCollection")) fields.put("placeOfCollection", true);
+        if (hidden.contains("weightOf1000Seeds")) fields.put("weightOf1000Seeds", true);
+        if (hidden.contains("numberOfSeeds")) fields.put("numberOfSeeds", true);
+        if (hidden.contains("completedSeeds")) fields.put("completedSeeds", true);
+        if (hidden.contains("seedGermination")) fields.put("seedGermination", true);
+        if (hidden.contains("seedMoisture")) fields.put("seedMoisture", true);
+        if (hidden.contains("GPS")) fields.put("GPS", true);
+        if (hidden.contains("ecotop")) fields.put("ecotop", true);
+        if (hidden.contains("pestInfestation")) fields.put("pestInfestation", true);
+        if (hidden.contains("comment")) fields.put("comment", true);
+        if (hidden.contains("photoXRay")) fields.put("photoXRay", true);
+        if (hidden.contains("photoSeed")) fields.put("photoSeed", true);
+        if (hidden.contains("photoEcotop")) fields.put("photoEcotop", true);
+
+        seedDto.setFields(fields);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-                Set<Field> hiddenFields = fieldRepository.findAllBySeedsContains(seed);
-                Set<String> hidden = hiddenFields.stream()
-                        .map(Field::getField)
-                        .collect(Collectors.toSet());
-                if (hidden.contains("id")) seedDto.setId(null);
-                if (hidden.contains("seedName")) seedDto.setSeedName(null);
-                if (hidden.contains("family")) seedDto.setFamily(null);
-                if (hidden.contains("genus")) seedDto.setGenus(null);
-                if (hidden.contains("specie")) seedDto.setSpecie(null);
-                if (hidden.contains("redList")) seedDto.setRedList(null);
-                if (hidden.contains("redBookRF")) seedDto.setRedBookRF(null);
-                if (hidden.contains("redBookSO")) seedDto.setRedBookSO(null);
-                if (hidden.contains("dateOfCollection")) seedDto.setDateOfCollection(null);
-                if (hidden.contains("placeOfCollection")) seedDto.setPlaceOfCollection(null);
-                if (hidden.contains("weightOf1000Seeds")) seedDto.setWeightOf1000Seeds(null);
-                if (hidden.contains("numberOfSeeds")) seedDto.setNumberOfSeeds(null);
-                if (hidden.contains("completedSeeds")) seedDto.setCompletedSeeds(null);
-                if (hidden.contains("seedGermination")) seedDto.setSeedGermination(null);
-                if (hidden.contains("seedMoisture")) seedDto.setSeedMoisture(null);
-                if (hidden.contains("GPS")) {
+                if (seed.getIsHidden() != null && seed.getIsHidden()) throw new ResourceNotFoundException();
+
+                if (fields.get("id")) seedDto.setId(null);
+                if (fields.get("seedName")) seedDto.setSeedName(null);
+                if (fields.get("family")) seedDto.setFamily(null);
+                if (fields.get("genus")) seedDto.setGenus(null);
+                if (fields.get("specie")) seedDto.setSpecie(null);
+                if (fields.get("redList")) seedDto.setRedList(null);
+                if (fields.get("redBookRF")) seedDto.setRedBookRF(null);
+                if (fields.get("redBookSO")) seedDto.setRedBookSO(null);
+                if (fields.get("dateOfCollection")) seedDto.setDateOfCollection(null);
+                if (fields.get("placeOfCollection")) seedDto.setPlaceOfCollection(null);
+                if (fields.get("weightOf1000Seeds")) seedDto.setWeightOf1000Seeds(null);
+                if (fields.get("numberOfSeeds")) seedDto.setNumberOfSeeds(null);
+                if (fields.get("completedSeeds")) seedDto.setCompletedSeeds(null);
+                if (fields.get("seedGermination")) seedDto.setSeedGermination(null);
+                if (fields.get("seedMoisture")) seedDto.setSeedMoisture(null);
+                if (fields.get("GPS")) {
                     seedDto.setGPSLatitude(null);
                     seedDto.setGPSLongitude(null);
                     seedDto.setGPSAltitude(null);
                 }
-                if (hidden.contains("ecotop")) seedDto.setEcotop(null);
-                if (hidden.contains("pestInfestation")) seedDto.setPestInfestation(null);
-                if (hidden.contains("comment")) seedDto.setComment(null);
+                if (fields.get("ecotop")) seedDto.setEcotop(null);
+                if (fields.get("pestInfestation")) seedDto.setPestInfestation(null);
+                if (fields.get("comment")) seedDto.setComment(null);
             }
+
+            seedDto.setIsHidden(seed.getIsHidden());
 
             return seedDto;
     }
@@ -241,6 +289,10 @@ public class SeedService {
     public void editSeed(SeedDto dto) {
         Seed seed = seedRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Seed not found"));
         // Find or create Family
+        Integer familyId = null;
+        if (seed.getSpecie() != null && seed.getSpecie().getGenus() != null && seed.getSpecie().getGenus().getFamily() != null)
+            familyId = familyRepository.findFamilyByNameOfFamily(seed.getSpecie().getGenus().getFamily().getNameOfFamily())
+                    .map(Family::getFamilyId).orElse(null);
         Family family = familyRepository.findFamilyByNameOfFamily(dto.getFamily())
                 .orElseGet(() -> {
                     Family newFamily = new Family();
@@ -248,6 +300,10 @@ public class SeedService {
                     return familyRepository.save(newFamily);
                 });
         // Find or create Genus
+        Integer genusId = null;
+        if (seed.getSpecie() != null && seed.getSpecie().getGenus() != null)
+            genusId = genusRepository.findGenusByNameOfGenus(seed.getSpecie().getGenus().getNameOfGenus())
+                    .map(Genus::getGenusId).orElse(null);
         Genus genus = genusRepository.findGenusByNameOfGenusAndFamily(dto.getGenus(), family)
                 .orElseGet(() -> {
                     Genus newGenus = new Genus();
@@ -256,6 +312,10 @@ public class SeedService {
                     return genusRepository.save(newGenus);
                 });
         // Find or create Specie
+        Integer specieId = null;
+        if (seed.getSpecie() != null)
+            specieId = specieRepository.findSpecieByNameOfSpecie(seed.getSpecie().getNameOfSpecie())
+                    .map(Specie::getSpecieId).orElse(null);
         Specie specie = specieRepository.findSpecieByNameOfSpecieAndGenus(dto.getSpecie(), genus)
                 .orElseGet(() -> {
                     Specie newSpecie = new Specie();
@@ -264,6 +324,10 @@ public class SeedService {
                     return specieRepository.save(newSpecie);
                 });
         // Find or create RedList
+        Integer redListId = null;
+        if (seed.getRed_list() != null)
+            redListId = redListRepository.findRedListByCategory(seed.getRed_list().getCategory())
+                    .map(RedList::getCategoryId).orElse(null);
         RedList redList = redListRepository.findRedListByCategory(dto.getRedList())
                 .orElseGet(() -> {
                     RedList newRedList = new RedList();
@@ -271,7 +335,11 @@ public class SeedService {
                     return redListRepository.save(newRedList);
                 });
         // Find or create RedBookRF, categoryId = 2
+        Integer redBookRFId = null;
         BookLevel bookLevelRF = bookLevelRepository.findById(2).orElseThrow(() -> new RuntimeException("RF book level not found"));
+        if (seed.getRed_book_rf() != null)
+            redBookRFId = redBookRepository.findRedBookByCategoryAndBookLevel(seed.getRed_book_rf().getCategory(), bookLevelRF)
+                    .map(RedBook::getCategoryId).orElse(null);
         RedBook redBookRF = redBookRepository.findRedBookByCategoryAndBookLevel(dto.getRedBookRF(), bookLevelRF)
                 .orElseGet(() -> {
                     RedBook newRedBook = new RedBook();
@@ -280,7 +348,11 @@ public class SeedService {
                     return redBookRepository.save(newRedBook);
                 });
         // Find or create RedBookSO, categoryId = 1
+        Integer redBookSOId = null;
         BookLevel bookLevelSO = bookLevelRepository.findById(1).orElseThrow(() -> new RuntimeException("SO book level not found"));
+        if (seed.getRed_book_so() != null)
+            redBookSOId = redBookRepository.findRedBookByCategoryAndBookLevel(seed.getRed_book_so().getCategory(), bookLevelSO)
+                    .map(RedBook::getCategoryId).orElse(null);
         RedBook redBookSO = redBookRepository.findRedBookByCategoryAndBookLevel(dto.getRedBookSO(), bookLevelSO)
                 .orElseGet(() -> {
                     RedBook newRedBook = new RedBook();
@@ -289,6 +361,10 @@ public class SeedService {
                     return redBookRepository.save(newRedBook);
                 });
         // Find or create PlaceOfColelction
+        Integer placeOfCollectionId = null;
+        if (seed.getPlace_of_collection() != null)
+            placeOfCollectionId = placeOfCollectionRepository.findPlaceOfCollectionByPlaceOfCollection(seed.getPlace_of_collection().getPlaceOfCollection())
+                    .map(PlaceOfCollection::getPlaceOfCollectionId).orElse(null);
         PlaceOfCollection placeOfCollection = placeOfCollectionRepository.findPlaceOfCollectionByPlaceOfCollection(dto.getPlaceOfCollection())
                 .orElseGet(() -> {
                     PlaceOfCollection newPlaceOfCollection = new PlaceOfCollection();
@@ -296,6 +372,10 @@ public class SeedService {
                     return placeOfCollectionRepository.save(newPlaceOfCollection);
                 });
         // Find or create Ecotop
+        Integer ecotopId = null;
+        if (seed.getSpecie() != null)
+            ecotopId = ecotopRepository.findEcotopByNameOfEcotop(seed.getEcotop().getNameOfEcotop())
+                    .map(Ecotop::getEcotopId).orElse(null);
         Ecotop ecotop = ecotopRepository.findEcotopByNameOfEcotop(dto.getEcotop())
                 .orElseGet(() -> {
                     Ecotop newEcotop = new Ecotop();
@@ -324,72 +404,75 @@ public class SeedService {
         seed.setPestInfestation(dto.getPestInfestation());
         seed.setComment(dto.getComment());
 
+        seed.getFields().clear();
+
+        // Обновление с новыми значениями
+        dto.getFields().forEach((fieldKey, value) -> {
+            if (value != null) {
+                Field field = fieldRepository.findByField(fieldKey);
+                seed.getFields().add(field);
+            }
+        });
+
+        seed.setIsHidden(dto.getIsHidden() != null && dto.getIsHidden());
+
         seedRepository.save(seed);
+
+        // Оптимизация БД
+        optimizeDB(familyId, genusId, specieId, redListId, redBookRFId, redBookSOId, placeOfCollectionId, ecotopId);
     }
 
     public void deleteSeed(String id) {
+        Seed seed = seedRepository.findById(id).orElseThrow(() -> new RuntimeException("Seed not found"));
+        // Find Family
+        Integer familyId = null;
+        if (seed.getSpecie() != null && seed.getSpecie().getGenus() != null && seed.getSpecie().getGenus().getFamily() != null)
+            familyId = familyRepository.findFamilyByNameOfFamily(seed.getSpecie().getGenus().getFamily().getNameOfFamily())
+                    .map(Family::getFamilyId).orElse(null);
+        // Find Genus
+        Integer genusId = null;
+        if (seed.getSpecie() != null && seed.getSpecie().getGenus() != null)
+            genusId = genusRepository.findGenusByNameOfGenus(seed.getSpecie().getGenus().getNameOfGenus())
+                    .map(Genus::getGenusId).orElse(null);
+        // Find Specie
+        Integer specieId = null;
+        if (seed.getSpecie() != null)
+            specieId = specieRepository.findSpecieByNameOfSpecie(seed.getSpecie().getNameOfSpecie())
+                    .map(Specie::getSpecieId).orElse(null);
+        // Find RedList
+        Integer redListId = null;
+        if (seed.getRed_list() != null)
+            redListId = redListRepository.findRedListByCategory(seed.getRed_list().getCategory())
+                    .map(RedList::getCategoryId).orElse(null);
+        // Find RedBookRF, categoryId = 2
+        Integer redBookRFId = null;
+        BookLevel bookLevelRF = bookLevelRepository.findById(2).orElseThrow(() -> new RuntimeException("RF book level not found"));
+        if (seed.getRed_book_rf() != null)
+            redBookRFId = redBookRepository.findRedBookByCategoryAndBookLevel(seed.getRed_book_rf().getCategory(), bookLevelRF)
+                    .map(RedBook::getCategoryId).orElse(null);
+        // Find RedBookSO, categoryId = 1
+        Integer redBookSOId = null;
+        BookLevel bookLevelSO = bookLevelRepository.findById(1).orElseThrow(() -> new RuntimeException("SO book level not found"));
+        if (seed.getRed_book_so() != null)
+            redBookSOId = redBookRepository.findRedBookByCategoryAndBookLevel(seed.getRed_book_so().getCategory(), bookLevelSO)
+                    .map(RedBook::getCategoryId).orElse(null);
+        // Find PlaceOfColelction
+        Integer placeOfCollectionId = null;
+        if (seed.getPlace_of_collection() != null)
+            placeOfCollectionId = placeOfCollectionRepository.findPlaceOfCollectionByPlaceOfCollection(seed.getPlace_of_collection().getPlaceOfCollection())
+                    .map(PlaceOfCollection::getPlaceOfCollectionId).orElse(null);
+        // Find Ecotop
+        Integer ecotopId = null;
+        if (seed.getSpecie() != null)
+            ecotopId = ecotopRepository.findEcotopByNameOfEcotop(seed.getEcotop().getNameOfEcotop())
+                    .map(Ecotop::getEcotopId).orElse(null);
+
+        seed.getFields().clear();
+
         seedRepository.deleteById(id);
-    }
 
-    public ResponseEntity<byte[]> exportAllCsv() {
-        List<Seed> seeds = seedRepository.findAll();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try {
-            byteArrayOutputStream.write(new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF});
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(500).body("Error occurred while generating CSV file.".getBytes(StandardCharsets.UTF_8));
-        }
-        try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream, StandardCharsets.UTF_8);
-             CSVWriter csvWriter = new CSVWriter(outputStreamWriter, ';', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END)) {
-            // Заголовки CSV файла
-            String[] header = {
-                    "ID", "Название", "Семейство", "Род", "Вид", "Красный список",
-                    "Красная книга РФ", "Красная книга Самарской области", "Дата сбора",
-                    "Место сбора", "Масса 1000 семян, г", "Количество семян, шт", "Выполненные семена, %",
-                    "Всхожесть семян, %", "Влажность семян, %", "GPS, N, E, H", "Экотоп",
-                    "Заселенность вредителями, %", "Комментарий"
-            };
-            csvWriter.writeNext(header);
-            for (Seed seed : seeds) {
-                String[] data = {
-                        seed.getSeedId(),
-                        seed.getSeedName(),
-                        seed.getSpecie().getGenus().getFamily().getNameOfFamily(),
-                        seed.getSpecie().getGenus().getNameOfGenus(),
-                        seed.getSpecie().getNameOfSpecie(),
-                        seed.getRed_list().getCategory(),
-                        seed.getRed_book_rf().getCategory(),
-                        seed.getRed_book_so().getCategory(),
-                        seed.getDateOfCollection().toString(),
-                        seed.getPlace_of_collection().getPlaceOfCollection(),
-                        seed.getWeightOf1000Seeds(),
-                        seed.getNumberOfSeeds(),
-                        seed.getCompletedSeeds(),
-                        seed.getSeedGermination(),
-                        seed.getSeedMoisture(),
-                        seed.getGPSLatitude() + "/" + seed.getGPSLongitude() + "/" + seed.getGPSAltitude(),
-                        seed.getEcotop().getNameOfEcotop(),
-                        seed.getPestInfestation(),
-                        seed.getComment()
-                };
-                csvWriter.writeNext(data);
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(500).body("Error occurred while generating CSV file.".getBytes(StandardCharsets.UTF_8));
-        }
-
-        byte[] csvContent = byteArrayOutputStream.toByteArray();
-
-        // Устанавливаем необходимые заголовки для загрузки файла
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=seedbank.csv");
-        headers.setContentType(MediaType.TEXT_PLAIN);
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(csvContent);
+        // Оптимизация БД
+        optimizeDB(familyId, genusId, specieId, redListId, redBookRFId, redBookSOId, placeOfCollectionId, ecotopId);
     }
 
 }

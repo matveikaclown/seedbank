@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -73,5 +74,19 @@ public class Seed {
     private String pestInfestation;         // заселенность вредителями
     @Column(name = "comment", columnDefinition = "text")
     private String comment;                 // комментарий
+    private Boolean isHidden;               // скрытие
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Seed seed = (Seed) o;
+        return Objects.equals(seedId, seed.seedId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seedId);
+    }
 
 }

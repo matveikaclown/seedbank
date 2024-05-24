@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 @Data
 @NoArgsConstructor
@@ -33,5 +34,8 @@ public class SeedDto {
     private String ecotop;
     private String pestInfestation;
     private String comment;
+
+    private HashMap<String, Boolean> fields;
+    private Boolean isHidden;
 
 }

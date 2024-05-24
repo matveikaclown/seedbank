@@ -10,4 +10,6 @@ public interface FieldRepository extends JpaRepository<Field, Long> {
 
     Set<Field> findAllBySeedsContains(Seed seed);
 
+    Field findByField(String field);
+
 }
