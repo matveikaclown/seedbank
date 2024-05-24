@@ -24,7 +24,7 @@ public class CsvService {
         this.seedRepository = seedRepository;
     }
 
-    private static void getSeedData(Seed seed, String[] data) { /*TODO - it returns null*/
+    private static void getSeedData(Seed seed, String[] data) {
         data[0] = seed.getSeedId();
         data[1] = seed.getSeedName();
         data[2] = seed.getSpecie().getGenus().getFamily().getNameOfFamily();
