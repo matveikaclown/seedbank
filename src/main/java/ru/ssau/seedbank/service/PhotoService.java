@@ -1,13 +1,11 @@
 package ru.ssau.seedbank.service;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ssau.seedbank.dto.AtlasDto;
 import ru.ssau.seedbank.model.Field;
 import ru.ssau.seedbank.repository.FieldRepository;
 import ru.ssau.seedbank.repository.SeedRepository;
@@ -17,7 +15,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,19 +88,6 @@ public class PhotoService {
         byte[] bytes = findImageBytes(path);
 
         return Base64.encodeBase64String(bytes);
-    }
-
-    public HashMap<String, String> getAllPhotos(Page<AtlasDto> seeds) {
-        HashMap<String, String> photos = new HashMap<>();
-        for (AtlasDto seed : seeds) {
-            try {
-                photos.put(seed.getId(), Base64.encodeBase64String(Files.readAllBytes(Paths.get("images\\" + seed.getId() + "\\seed.jpg"))));
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                photos.put(seed.getId(), Base64.encodeBase64String(new byte[0]));
-            }
-        }
-        return photos;
     }
 
     public void savePhoto(MultipartFile file, String seedId, String fileType, Boolean delete) {
