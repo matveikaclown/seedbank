@@ -23,6 +23,11 @@ body {
     display: flex;
     line-height: 1;
 }
+.name img {
+    height: 20px;
+    margin-right: 10px;
+    filter: brightness(1000%);
+}
 .name a {
     text-decoration: none;
     color: white; /* Белый цвет текста */

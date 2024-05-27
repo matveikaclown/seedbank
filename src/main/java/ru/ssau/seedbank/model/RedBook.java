@@ -25,6 +25,5 @@ public class RedBook {
     private Set<Seed> seedsRF;
 
     private String category;        // категория
-    private String description;     // описание
 
 }

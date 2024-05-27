@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -53,7 +53,7 @@ public class Seed {
     private Set<Field> fields;
 
     private String seedName;                // название семени
-    private Timestamp dateOfCollection;        // дата сбора
+    private Date dateOfCollection;        // дата сбора
     @Column(name = "gpslatitude", length = 20)
     private String GPSLatitude;             // GPS широта
     @Column(name = "gpslongitude", length = 20)

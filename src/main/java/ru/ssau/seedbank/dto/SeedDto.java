@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.HashMap;
 
 @Data
@@ -21,7 +21,7 @@ public class SeedDto {
     private String redList;
     private String redBookRF;
     private String redBookSO;
-    private Timestamp dateOfCollection;
+    private Date dateOfCollection;
     private String placeOfCollection;
     private String weightOf1000Seeds;
     private String numberOfSeeds;

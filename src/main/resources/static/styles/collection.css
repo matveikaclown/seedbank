@@ -46,20 +46,22 @@ th.button {
     text-align: left;
     padding: 0 0 0 10px;
 }
-th.button button {
+th.button button, th.button a {
     box-sizing: border-box;
     padding: 10px 20px;
     border: none;
     background-color: #007bff;
     color: #fff;
     transition: background-color 0.3s ease;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
     cursor: pointer;
+    min-width: 100px;
+    text-decoration: none; /* Убираем подчеркивание у ссылок */
+    font-weight: normal;
 }
-.search button:hover {
+th.button a {
+
+}
+.search button:hover, .search a:hover {
     background-color: #0056b3;
 }
 .search input:focus {

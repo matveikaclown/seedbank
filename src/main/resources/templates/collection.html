@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Коллекция</title>
     <link href="../static/styles/collection.css" th:href="@{/styles/collection.css}" rel="stylesheet"/>
-    <link href="../static/styles/footer.css" th:href="@{/styles/footer.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -29,6 +30,7 @@
                 <th colspan="2" class="button">
                     <button type="submit">Поиск</button>
                     <button type="button" onclick="resetForm()">Очистить</button>
+                    <button type="button" sec:authorize="hasAnyAuthority('ADMIN', 'USER')" th:onclick="|window.location.href='@{/collection/add}'|">Добавить</button>
                 </th>
             </tr>
         </form>
